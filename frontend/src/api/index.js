@@ -1,15 +1,17 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://threed-printer-management.onrender.com/api',
   headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use((config) => {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
+
   if (user?.token) {
     config.headers.Authorization = `Bearer ${user.token}`;
   }
+
   return config;
 });
 
@@ -20,6 +22,7 @@ api.interceptors.response.use(
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
+
     return Promise.reject(err);
   }
 );
@@ -64,8 +67,11 @@ export const technicianAPI = {
 
 export const exportAPI = {
   getDashboard: () => api.get('/export/dashboard'),
-  downloadPDF: (resource) => api.get(`/export/pdf/${resource}`, { responseType: 'blob' }),
-  downloadExcel: (resource) => api.get(`/export/excel/${resource}`, { responseType: 'blob' }),
+  downloadPDF: (resource) =>
+    api.get(`/export/pdf/${resource}`, { responseType: 'blob' }),
+
+  downloadExcel: (resource) =>
+    api.get(`/export/excel/${resource}`, { responseType: 'blob' }),
 };
 
 export default api;
