@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 225 20% 96%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 93%;
+    --secondary-foreground: 224 30% 12%;
+    --muted: 220 14% 93%;
+    --muted-foreground: 224 10% 37%;
+    --accent: 220 14% 93%;
+    --accent-foreground: 224 71% 4%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 84%;
+    --input: 220 15% 84%;
+    --ring: 262 83% 58%;
+    --radius: 0.75rem;
+    --sidebar: 224 50% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-muted: 224 30% 14%;
+    --sidebar-active: 262 83% 58%;
+  }
+
+  .dark {
+    --background: 224 50% 6%;
+    --foreground: 210 30% 94%;
+    --card: 224 40% 10%;
+    --card-foreground: 210 30% 94%;
+    --popover: 224 40% 10%;
+    --popover-foreground: 210 30% 94%;
+    --primary: 262 83% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 224 25% 18%;
+    --secondary-foreground: 210 30% 94%;
+    --muted: 224 25% 18%;
+    --muted-foreground: 224 10% 64%;
+    --accent: 224 25% 18%;
+    --accent-foreground: 210 30% 94%;
+    --destructive: 0 70% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 224 20% 22%;
+    --input: 224 20% 22%;
+    --ring: 262 83% 62%;
+    --sidebar: 224 50% 4%;
+    --sidebar-foreground: 0 0% 92%;
+    --sidebar-muted: 224 25% 14%;
+    --sidebar-active: 262 83% 62%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: Arial, sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-sidebar {
+    background: hsl(var(--sidebar));
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
