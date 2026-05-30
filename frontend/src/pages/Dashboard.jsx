@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Printer, Wrench, Package, Users, Clock, AlertTriangle, Activity, CheckCircle } from 'lucide-react'
+import { Printer, Wrench, Package, Users, Clock, AlertTriangle, Activity, CheckCircle, Download, ChevronDown } from 'lucide-react'
 import { exportAPI } from '../api'
 import { Card, CardContent } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -14,14 +14,14 @@ import RecentActivity from '../components/RecentActivity'
 import { cn } from '../lib/utils'
 
 const statCards = [
-  { key: 'totalPrinters', label: 'Total Printers', icon: Printer, color: 'text-violet-600 dark:text-violet-300', bg: 'bg-violet-100 dark:bg-violet-950/60' },
-  { key: 'activePrinters', label: 'Active Printers', icon: Activity, color: 'text-emerald-600 dark:text-emerald-300', bg: 'bg-emerald-100 dark:bg-emerald-950/60' },
-  { key: 'totalRepairs', label: 'Total Repairs', icon: Wrench, color: 'text-amber-600 dark:text-amber-300', bg: 'bg-amber-100 dark:bg-amber-950/60' },
-  { key: 'pendingRepairs', label: 'Pending Repairs', icon: Clock, color: 'text-rose-600 dark:text-rose-300', bg: 'bg-rose-100 dark:bg-rose-950/60' },
-  { key: 'completedRepairs', label: 'Completed Repairs', icon: CheckCircle, color: 'text-emerald-600 dark:text-emerald-300', bg: 'bg-emerald-100 dark:bg-emerald-950/60' },
-  { key: 'totalInventory', label: 'Inventory Items', icon: Package, color: 'text-blue-600 dark:text-blue-300', bg: 'bg-blue-100 dark:bg-blue-950/60' },
-  { key: 'lowStockItems', label: 'Low Stock Items', icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-300', bg: 'bg-orange-100 dark:bg-orange-950/60' },
-  { key: 'totalTechnicians', label: 'Technicians', icon: Users, color: 'text-indigo-600 dark:text-indigo-300', bg: 'bg-indigo-100 dark:bg-indigo-950/60' },
+  { key: 'totalPrinters', label: 'Total Printers', icon: Printer, color: 'text-violet-400', bg: 'bg-gradient-to-br from-violet-500/20 to-violet-600/10', border: 'border-violet-500/20' },
+  { key: 'activePrinters', label: 'Active Printers', icon: Activity, color: 'text-emerald-400', bg: 'bg-gradient-to-br from-emerald-500/20 to-emerald-600/10', border: 'border-emerald-500/20' },
+  { key: 'totalRepairs', label: 'Total Repairs', icon: Wrench, color: 'text-amber-400', bg: 'bg-gradient-to-br from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20' },
+  { key: 'pendingRepairs', label: 'Pending Repairs', icon: Clock, color: 'text-rose-400', bg: 'bg-gradient-to-br from-rose-500/20 to-rose-600/10', border: 'border-rose-500/20' },
+  { key: 'completedRepairs', label: 'Completed Repairs', icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-gradient-to-br from-emerald-500/20 to-emerald-600/10', border: 'border-emerald-500/20' },
+  { key: 'totalInventory', label: 'Inventory Items', icon: Package, color: 'text-blue-400', bg: 'bg-gradient-to-br from-blue-500/20 to-blue-600/10', border: 'border-blue-500/20' },
+  { key: 'lowStockItems', label: 'Low Stock Items', icon: AlertTriangle, color: 'text-orange-400', bg: 'bg-gradient-to-br from-orange-500/20 to-orange-600/10', border: 'border-orange-500/20' },
+  { key: 'totalTechnicians', label: 'Technicians', icon: Users, color: 'text-indigo-400', bg: 'bg-gradient-to-br from-indigo-500/20 to-indigo-600/10', border: 'border-indigo-500/20' },
 ]
 
 const exportResources = [
@@ -56,81 +56,118 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="page-container">
+      {/* Header */}
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground text-sm mt-1">Overview of your 3D printer management system</p>
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-subtitle">Real-time overview of your 3D printer management system</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {exportResources.map(({ resource, label }) => (
-            <div key={resource} className="flex gap-1">
-              <Button variant="outline" size="sm" onClick={() => handleExport(resource, 'pdf')} disabled={exporting === `${resource}-pdf`} className="h-8 text-xs">PDF {label}</Button>
-              <Button variant="outline" size="sm" onClick={() => handleExport(resource, 'xlsx')} disabled={exporting === `${resource}-xlsx`} className="h-8 text-xs">Excel {label}</Button>
-            </div>
-          ))}
+        <div className="flex items-center gap-2">
+          <div className="relative inline-block">
+            <Button variant="outline" size="sm" className="h-9 gap-2 pr-3">
+              <Download className="h-3.5 w-3.5" />
+              Export
+              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            </Button>
+            {/* Simplified - just show export buttons directly */}
+          </div>
         </div>
       </div>
 
+      {/* Quick Export Row */}
+      <div className="flex flex-wrap gap-2">
+        {exportResources.map(({ resource, label }) => (
+          <div key={resource} className="flex gap-1">
+            <Button variant="ghost" size="sm" onClick={() => handleExport(resource, 'pdf')} disabled={exporting === `${resource}-pdf`} className="h-7 text-[11px] px-2.5 rounded-lg text-muted-foreground hover:text-foreground">
+              PDF {label}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => handleExport(resource, 'xlsx')} disabled={exporting === `${resource}-xlsx`} className="h-7 text-[11px] px-2.5 rounded-lg text-muted-foreground hover:text-foreground">
+              Excel {label}
+            </Button>
+          </div>
+        ))}
+      </div>
+
+      {/* KPI Cards */}
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {statCards.map(({ key, label, icon: Icon, color, bg }) => (
-            <Card key={key} className="animate-slide-up">
-              <CardContent className="p-4 sm:p-5">
+          {statCards.map(({ key, label, icon: Icon, color, bg, border }, i) => (
+            <div
+              key={key}
+              className="stat-card animate-fade-in-up"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <CardContent className="p-0">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1.5">
                     <p className="text-xs sm:text-sm text-muted-foreground font-medium">{label}</p>
-                    <p className="text-xl sm:text-2xl font-bold tracking-tight">
-                      {key === 'completedRepairs' ? (
-                        <AnimatedCounter value={stats[key] || 0} />
-                      ) : (
-                        <AnimatedCounter value={stats[key]} />
-                      )}
+                    <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                      <AnimatedCounter value={stats[key] || 0} />
                     </p>
                   </div>
-                  <div className={cn('p-2.5 sm:p-3 rounded-xl', bg)}>
-                    <Icon className={cn('h-4 w-4 sm:h-5 sm:w-5', color)} />
+                  <div className={cn('kpi-icon', bg)}>
+                    <Icon className={cn('h-5 w-5', color)} />
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </div>
           ))}
         </div>
       )}
 
+      {/* Charts Row 1 */}
       {stats && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <PrinterChart data={stats.printersByBrand} />
-          <PrintersByTypeChart data={stats.printersByModel} />
-          <RepairChart data={stats.repairsByStatus} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+            <PrinterChart data={stats.printersByBrand} />
+          </div>
+          <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <PrintersByTypeChart data={stats.printersByModel} />
+          </div>
+          <div className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+            <RepairChart data={stats.repairsByStatus} />
+          </div>
         </div>
       )}
 
+      {/* Charts Row 2 */}
       {stats && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <MonthlyRepairsChart data={stats.monthlyRepairs} />
-          <InventoryStockChart data={stats.inventoryItems} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <MonthlyRepairsChart data={stats.monthlyRepairs} />
+          </div>
+          <div className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+            <InventoryStockChart data={stats.inventoryItems} />
+          </div>
         </div>
       )}
 
+      {/* Charts Row 3 */}
       {stats && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TechnicianWorkloadChart data={stats.technicianWorkload} />
-          <RecentActivity activities={stats.recentActivity} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+            <TechnicianWorkloadChart data={stats.technicianWorkload} />
+          </div>
+          <div className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <RecentActivity activities={stats.recentActivity} />
+          </div>
         </div>
       )}
 
+      {/* Loading State */}
       {!stats && (
-        <Card>
-          <CardContent className="flex items-center justify-center py-16">
+        <div className="content-card">
+          <CardContent className="flex items-center justify-center py-20">
             <div className="text-center">
-              <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mx-auto mb-3">
-                <Activity className="h-5 w-5 text-muted-foreground animate-pulse" />
+              <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+                <Activity className="h-6 w-6 text-muted-foreground animate-pulse-soft" />
               </div>
-              <p className="text-muted-foreground">Loading dashboard data...</p>
+              <p className="text-muted-foreground font-medium">Loading dashboard data...</p>
+              <p className="text-muted-foreground/50 text-sm mt-1">Fetching real-time metrics</p>
             </div>
           </CardContent>
-        </Card>
+        </div>
       )}
     </div>
   )

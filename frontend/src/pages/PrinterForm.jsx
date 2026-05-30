@@ -51,31 +51,41 @@ export default function PrinterForm() {
   const brands = ['Bambu Lab A1', 'Bambu Lab P1S', 'Anycubic']
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-2xl mx-auto page-container">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/printers')}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{isEdit ? 'Edit Printer' : 'Add Printer'}</h1>
-          <p className="text-muted-foreground text-sm">{isEdit ? 'Update printer details' : 'Register a new printer'}</p>
+          <h1 className="page-title">{isEdit ? 'Edit Printer' : 'Add Printer'}</h1>
+          <p className="page-subtitle">{isEdit ? 'Update printer details' : 'Register a new 3D printer'}</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg px-4 py-3">{error}</div>
+        <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-destructive flex-shrink-0" />
+          {error}
+        </div>
       )}
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base">Printer Information</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+              </svg>
+            </div>
+            <CardTitle>Printer Information</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required />
+                <Label htmlFor="name">Printer Name</Label>
+                <Input id="name" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required placeholder="e.g. Workshop Delta" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="brand">Brand</Label>
@@ -86,15 +96,15 @@ export default function PrinterForm() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="model">Model</Label>
-                <Input id="model" value={form.model} onChange={(e) => setForm({...form, model: e.target.value})} required />
+                <Input id="model" value={form.model} onChange={(e) => setForm({...form, model: e.target.value})} required placeholder="e.g. X1-Carbon" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="serialNumber">Serial Number</Label>
-                <Input id="serialNumber" value={form.serialNumber} onChange={(e) => setForm({...form, serialNumber: e.target.value})} required />
+                <Input id="serialNumber" value={form.serialNumber} onChange={(e) => setForm({...form, serialNumber: e.target.value})} required placeholder="SN-001" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input id="location" value={form.location} onChange={(e) => setForm({...form, location: e.target.value})} />
+                <Input id="location" value={form.location} onChange={(e) => setForm({...form, location: e.target.value})} placeholder="e.g. Lab A, Shelf 3" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
@@ -114,9 +124,10 @@ export default function PrinterForm() {
               <Label htmlFor="notes">Notes</Label>
               <textarea
                 id="notes"
-                className="flex min-h-[80px] w-full rounded-lg border-2 border-border bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/20 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+                className="textarea-field"
                 value={form.notes}
                 onChange={(e) => setForm({...form, notes: e.target.value})}
+                placeholder="Any additional notes about this printer..."
               />
             </div>
             <div className="flex gap-3 pt-2">

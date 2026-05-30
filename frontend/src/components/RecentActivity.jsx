@@ -26,17 +26,17 @@ function timeAgo(date) {
 
 export default function RecentActivity({ activities = [] }) {
   return (
-    <div className="bg-card border rounded-xl p-6">
+    <div className="bg-card border border-border/40 rounded-2xl p-5 sm:p-6 shadow-sm">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Live Feed</h3>
-          <h2 className="text-lg font-bold">Recent Activity</h2>
+          <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Live Feed</h3>
+          <h2 className="text-base font-bold text-foreground">Recent Activity</h2>
         </div>
-        <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-full">{activities.length} events</span>
+        <span className="text-[11px] text-muted-foreground bg-muted px-2.5 py-1 rounded-full font-medium">{activities.length} events</span>
       </div>
 
       {activities.length === 0 ? (
-        <div className="flex items-center justify-center h-[200px] text-muted-foreground/60">No recent activity</div>
+        <div className="flex items-center justify-center h-[200px] text-muted-foreground/50 text-sm">No recent activity</div>
       ) : (
         <div className="space-y-0">
           {activities.map((activity, i) => {
@@ -48,17 +48,17 @@ export default function RecentActivity({ activities = [] }) {
                 key={`${activity.type}-${activity.id}`}
                 className={cn(
                   'flex items-start gap-4 py-3',
-                  i < activities.length - 1 && 'border-b border-border/50'
+                  i < activities.length - 1 && 'border-b border-border/30'
                 )}
               >
-                <div className={cn('p-2 rounded-lg flex-shrink-0', cfg.bg)}>
+                <div className={cn('p-2 rounded-xl flex-shrink-0', cfg.bg)}>
                   <Icon className={cn('h-4 w-4', cfg.color)} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-foreground truncate">{activity.title}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">{activity.description}</p>
                 </div>
-                <span className="text-xs text-muted-foreground flex-shrink-0 pt-0.5">{timeAgo(activity.date)}</span>
+                <span className="text-xs text-muted-foreground/60 flex-shrink-0 pt-0.5">{timeAgo(activity.date)}</span>
               </div>
             )
           })}

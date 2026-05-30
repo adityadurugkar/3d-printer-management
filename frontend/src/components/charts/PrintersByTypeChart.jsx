@@ -3,33 +3,35 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 const COLORS = ['hsl(262, 83%, 58%)', 'hsl(199, 89%, 48%)', 'hsl(142, 71%, 45%)', 'hsl(38, 92%, 50%)', 'hsl(0, 84%, 60%)']
 
 export default function PrintersByTypeChart({ data = [] }) {
-  if (data.length === 0) {
-    return (
-      <div className="bg-card border rounded-xl p-6">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Models</h3>
-        <h2 className="text-lg font-bold mb-4">Printers by Model</h2>
-        <div className="flex items-center justify-center h-[260px] text-muted-foreground/60">No data available</div>
-      </div>
-    )
-  }
-
   return (
-    <div className="bg-card border rounded-xl p-6">
-      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Models</h3>
-      <h2 className="text-lg font-bold mb-4">Printers by Model</h2>
-      <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={data} layout="vertical" barSize={24}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
-          <XAxis type="number" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
-          <YAxis type="category" dataKey="_id" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={120} />
-          <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid hsl(var(--border))', background: 'hsl(var(--card))' }} />
-          <Bar dataKey="count" radius={[0, 4, 4, 0]}>
-            {data.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="bg-card border border-border/40 rounded-2xl p-5 sm:p-6 shadow-sm">
+      <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Models</h3>
+      <h2 className="text-base font-bold text-foreground mb-5">Printers by Model</h2>
+      {data.length === 0 ? (
+        <div className="flex items-center justify-center h-[260px] text-muted-foreground/50 text-sm">No data available</div>
+      ) : (
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={data} layout="vertical" barSize={24}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} opacity={0.5} />
+            <XAxis type="number" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} tickLine={false} axisLine={false} allowDecimals={false} />
+            <YAxis type="category" dataKey="_id" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} tickLine={false} axisLine={false} width={120} />
+            <Tooltip
+              contentStyle={{
+                borderRadius: '16px',
+                border: '1px solid hsl(var(--border))',
+                background: 'hsl(var(--card))',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+              }}
+              cursor={{ fill: 'hsl(var(--muted))' }}
+            />
+            <Bar dataKey="count" radius={[0, 6, 6, 0]}>
+              {data.map((_, i) => (
+                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   )
 }

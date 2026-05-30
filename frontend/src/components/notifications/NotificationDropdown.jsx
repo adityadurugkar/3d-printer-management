@@ -1,6 +1,5 @@
 import { Printer, Wrench, Package, Users, AlertTriangle, CheckCircle, Clock, Bell } from 'lucide-react'
 import { useSocket } from '../../context/SocketContext'
-import { Button } from '../ui/button'
 import { cn } from '../../lib/utils'
 
 const typeConfig = {
@@ -28,10 +27,10 @@ export default function NotificationDropdown({ onClose }) {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useSocket()
 
   return (
-    <div className="bg-card border border-border/60 rounded-xl shadow-2xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
+    <div className="bg-card border border-border/50 rounded-2xl shadow-2xl shadow-black/20 overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 bg-muted/20">
         <div>
-          <p className="text-sm font-bold">Notifications</p>
+          <p className="text-sm font-bold text-foreground">Notifications</p>
           <p className="text-[11px] text-muted-foreground">{unreadCount} unread</p>
         </div>
         {unreadCount > 0 && (
@@ -47,9 +46,10 @@ export default function NotificationDropdown({ onClose }) {
 
       <div className="max-h-[360px] overflow-y-auto">
         {notifications.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
-            <Bell className="h-8 w-8 mb-2 opacity-30" />
-            <p className="text-sm">No notifications yet</p>
+          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+            <Bell className="h-8 w-8 mb-2 opacity-20" />
+            <p className="text-sm font-medium text-foreground/50">No notifications yet</p>
+            <p className="text-xs text-muted-foreground/50 mt-1">New notifications will appear here</p>
           </div>
         ) : (
           notifications.slice(0, 20).map((n) => {
@@ -60,23 +60,23 @@ export default function NotificationDropdown({ onClose }) {
               <div
                 key={n._id}
                 className={cn(
-                  'flex items-start gap-3 px-4 py-3 border-b border-border/30 transition-colors cursor-pointer',
-                  n.read ? 'hover:bg-muted/30' : 'bg-primary/5 hover:bg-primary/10'
+                  'flex items-start gap-3 px-4 py-3 border-b border-border/20 transition-colors cursor-pointer',
+                  n.read ? 'hover:bg-muted/30' : 'bg-primary/[0.03] hover:bg-primary/[0.06]'
                 )}
                 onClick={() => { if (!n.read) markAsRead(n._id); onClose?.() }}
               >
-                <div className={cn('p-2 rounded-lg flex-shrink-0', cfg.bg)}>
+                <div className={cn('p-2 rounded-xl flex-shrink-0', cfg.bg)}>
                   <Icon className={cn('h-3.5 w-3.5', cfg.color)} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={cn('text-sm', n.read ? 'text-foreground' : 'font-semibold text-foreground')}>
+                  <p className={cn('text-sm', n.read ? 'text-foreground/80' : 'font-semibold text-foreground')}>
                     {n.title}
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5 truncate">{n.message}</p>
-                  <p className="text-[10px] text-muted-foreground/60 mt-1">{timeAgo(n.createdAt)}</p>
+                  <p className="text-[10px] text-muted-foreground/50 mt-1">{timeAgo(n.createdAt)}</p>
                 </div>
                 {!n.read && (
-                  <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2" />
+                  <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-2 shadow-sm shadow-primary/30" />
                 )}
               </div>
             )

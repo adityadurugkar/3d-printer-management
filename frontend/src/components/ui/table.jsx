@@ -9,7 +9,7 @@ const Table = forwardRef(({ className, ...props }, ref) => (
 Table.displayName = 'Table'
 
 const TableHeader = forwardRef(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+  <thead ref={ref} className={cn('[&_tr]:border-b border-border/50', className)} {...props} />
 ))
 TableHeader.displayName = 'TableHeader'
 
@@ -22,7 +22,7 @@ const TableRow = forwardRef(({ className, ...props }, ref) => (
   <tr
     ref={ref}
     className={cn(
-      'border-b border-border/50 transition-colors hover:bg-muted/70 data-[state=selected]:bg-muted',
+      'border-b border-border/30 transition-all duration-150 hover:bg-muted/40 data-[state=selected]:bg-muted/60',
       className
     )}
     {...props}
@@ -34,7 +34,7 @@ const TableHead = forwardRef(({ className, ...props }, ref) => (
   <th
     ref={ref}
     className={cn(
-      'h-12 px-4 text-left align-middle font-bold text-muted-foreground text-xs uppercase tracking-wider',
+      'h-11 px-4 text-left align-middle text-xs font-semibold text-muted-foreground/80 uppercase tracking-wider bg-muted/20',
       className
     )}
     {...props}
@@ -43,7 +43,7 @@ const TableHead = forwardRef(({ className, ...props }, ref) => (
 TableHead.displayName = 'TableHead'
 
 const TableCell = forwardRef(({ className, ...props }, ref) => (
-  <td ref={ref} className={cn('p-4 align-middle text-foreground', className)} {...props} />
+  <td ref={ref} className={cn('px-4 py-3.5 align-middle text-foreground/90', className)} {...props} />
 ))
 TableCell.displayName = 'TableCell'
 

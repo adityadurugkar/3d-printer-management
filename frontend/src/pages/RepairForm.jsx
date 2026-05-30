@@ -58,27 +58,37 @@ export default function RepairForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-2xl mx-auto page-container">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/repairs')}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{isEdit ? 'Edit Repair' : 'New Repair'}</h1>
-          <p className="text-muted-foreground text-sm">{isEdit ? 'Update repair details' : 'Create a new repair record'}</p>
+          <h1 className="page-title">{isEdit ? 'Edit Repair' : 'New Repair'}</h1>
+          <p className="page-subtitle">{isEdit ? 'Update repair details' : 'Create a new repair record'}</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg px-4 py-3">{error}</div>
+        <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-destructive flex-shrink-0" />
+          {error}
+        </div>
       )}
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base">Repair Information</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+              <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.49 5.49a2.25 2.25 0 01-3.18-3.18l5.49-5.49m-1.04-1.04L5.25 7.5m3.96 3.96L15.75 3.75l4.5 4.5-6.54 6.54m-1.04-1.04l1.04 1.04m-6.54-6.54l1.04-1.04" />
+              </svg>
+            </div>
+            <CardTitle>Repair Information</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="printerId">Printer</Label>
@@ -89,7 +99,7 @@ export default function RepairForm() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="printerNumber">Printer Number</Label>
-                <Input id="printerNumber" value={form.printerNumber} readOnly className="bg-muted text-muted-foreground cursor-not-allowed border-dashed" />
+                <Input id="printerNumber" value={form.printerNumber} readOnly className="bg-muted/50 text-muted-foreground cursor-not-allowed border-dashed" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="repairDate">Repair Date</Label>
@@ -97,7 +107,7 @@ export default function RepairForm() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="technicianName">Technician Name</Label>
-                <Input id="technicianName" value={form.technicianName} onChange={(e) => setForm({...form, technicianName: e.target.value})} required />
+                <Input id="technicianName" value={form.technicianName} onChange={(e) => setForm({...form, technicianName: e.target.value})} required placeholder="e.g. John Smith" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
@@ -113,9 +123,10 @@ export default function RepairForm() {
               <Label htmlFor="problemDescription">Problem Description</Label>
               <textarea
                 id="problemDescription"
-                className="flex min-h-[100px] w-full rounded-lg border-2 border-border bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/20 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+                className="textarea-field"
                 value={form.problemDescription}
                 onChange={(e) => setForm({...form, problemDescription: e.target.value})}
+                placeholder="Describe the issue in detail..."
                 required
               />
             </div>

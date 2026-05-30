@@ -43,43 +43,53 @@ export default function TechnicianForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-2xl mx-auto page-container">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/technicians')}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{isEdit ? 'Edit Technician' : 'Add Technician'}</h1>
-          <p className="text-muted-foreground text-sm">{isEdit ? 'Update technician details' : 'Add a new technician'}</p>
+          <h1 className="page-title">{isEdit ? 'Edit Technician' : 'Add Technician'}</h1>
+          <p className="page-subtitle">{isEdit ? 'Update technician details' : 'Add a new technician to the team'}</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg px-4 py-3">{error}</div>
+        <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-destructive flex-shrink-0" />
+          {error}
+        </div>
       )}
 
-      <Card className="border-border/50">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base">Technician Information</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+              <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              </svg>
+            </div>
+            <CardTitle>Technician Information</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required />
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required placeholder="e.g. Jane Doe" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input type="email" id="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
+                <Input type="email" id="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required placeholder="jane@company.com" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
+                <Input id="phone" value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} placeholder="+1 555-0000" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="specialization">Specialization</Label>
-                <Input id="specialization" value={form.specialization} onChange={(e) => setForm({...form, specialization: e.target.value})} />
+                <Input id="specialization" value={form.specialization} onChange={(e) => setForm({...form, specialization: e.target.value})} placeholder="e.g. FDM Printing" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
