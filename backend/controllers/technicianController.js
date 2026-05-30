@@ -1,4 +1,5 @@
 const Technician = require('../models/Technician');
+const { createAndEmitNotification } = require('./notificationController');
 
 exports.getTechnicians = async (req, res) => {
   try {
@@ -35,6 +36,13 @@ exports.updateTechnician = async (req, res) => {
       runValidators: true,
     });
     if (!technician) return res.status(404).json({ message: 'Technician not found' });
+    createAndEmitNotification({
+      type: 'technician_assigned',
+      title: 'Technician Updated',
+      message: `${technician.name} — status: ${technician.status}, specialization: ${technician.specialization || 'general'}`,
+      resourceId: technician._id.toString(),
+      resourceModel: 'Technician',
+    });
     res.json(technician);
   } catch (error) {
     res.status(400).json({ message: error.message });

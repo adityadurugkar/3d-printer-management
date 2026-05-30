@@ -138,6 +138,7 @@ exports.getDashboardStats = async (req, res) => {
     const activePrinters = await Printer.countDocuments({ status: 'active' });
     const totalRepairs = await Repair.countDocuments();
     const pendingRepairs = await Repair.countDocuments({ status: { $ne: 'completed' } });
+    const completedRepairs = await Repair.countDocuments({ status: 'completed' });
     const totalInventory = await Inventory.countDocuments();
     const lowStockItems = await Inventory.countDocuments({ quantity: { $lte: 5 } });
     const totalTechnicians = await Technician.countDocuments();
@@ -150,16 +151,78 @@ exports.getDashboardStats = async (req, res) => {
       { $group: { _id: '$brand', count: { $sum: 1 } } },
     ]);
 
+    const printersByModel = await Printer.aggregate([
+      { $group: { _id: '$model', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 11);
+    twelveMonthsAgo.setDate(1);
+
+    const monthlyRepairs = await Repair.aggregate([
+      { $match: { repairDate: { $gte: twelveMonthsAgo } } },
+      {
+        $group: {
+          _id: { year: { $year: '$repairDate' }, month: { $month: '$repairDate' } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } },
+    ]);
+
+    const inventoryItems = await Inventory.find({}, 'partName quantity price').sort({ quantity: 1 }).limit(10);
+
+    const technicianWorkload = await Repair.aggregate([
+      { $group: { _id: '$technicianName', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    const recentRepairs = await Repair.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('printerName printerNumber repairDate status createdAt');
+
+    const recentPrinters = await Printer.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('name brand model status createdAt');
+
+    const recentActivity = [
+      ...recentRepairs.map(r => ({
+        type: 'repair',
+        id: r._id,
+        title: `Repair: ${r.printerName}`,
+        description: `${r.printerNumber} — ${r.status}`,
+        date: r.createdAt || r.repairDate,
+        status: r.status,
+      })),
+      ...recentPrinters.map(p => ({
+        type: 'printer',
+        id: p._id,
+        title: `Printer: ${p.name}`,
+        description: `${p.brand} ${p.model} — ${p.status}`,
+        date: p.createdAt,
+        status: p.status,
+      })),
+    ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+
     res.json({
       totalPrinters,
       activePrinters,
       totalRepairs,
       pendingRepairs,
+      completedRepairs,
       totalInventory,
       lowStockItems,
       totalTechnicians,
       repairsByStatus,
       printersByBrand,
+      printersByModel,
+      monthlyRepairs,
+      inventoryItems,
+      technicianWorkload,
+      recentActivity,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

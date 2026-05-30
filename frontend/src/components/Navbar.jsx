@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { Menu, LogOut } from 'lucide-react'
 import { Button } from './ui/button'
 import ThemeToggle from './theme-toggle'
+import NotificationBell from './notifications/NotificationBell'
 
 export default function Navbar({ onMenuClick }) {
   const navigate = useNavigate()
@@ -26,6 +27,7 @@ export default function Navbar({ onMenuClick }) {
         </div>
 
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <ThemeToggle />
           <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10">
             <LogOut className="h-4 w-4" />

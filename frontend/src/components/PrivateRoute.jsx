@@ -1,9 +1,12 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate } from "react-router-dom"
+import { getUser } from "../lib/auth"
 
 export default function PrivateRoute({ children }) {
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const user = getUser()
+
   if (!user?.token) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/login" />
   }
+
   return children
 }

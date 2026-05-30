@@ -1,4 +1,5 @@
 const Inventory = require('../models/Inventory');
+const { createAndEmitNotification } = require('./notificationController');
 
 exports.getItems = async (req, res) => {
   try {
@@ -35,6 +36,15 @@ exports.updateItem = async (req, res) => {
       runValidators: true,
     });
     if (!item) return res.status(404).json({ message: 'Item not found' });
+    if (item.quantity <= 5) {
+      createAndEmitNotification({
+        type: 'low_inventory',
+        title: 'Low Stock Alert',
+        message: `${item.partName} — only ${item.quantity} left (supplier: ${item.supplier})`,
+        resourceId: item._id.toString(),
+        resourceModel: 'Inventory',
+      });
+    }
     res.json(item);
   } catch (error) {
     res.status(400).json({ message: error.message });
