@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Printer, Wrench, Package, Users, Clock, AlertTriangle, Activity, CheckCircle, Download, ChevronDown } from 'lucide-react'
+import { Printer, Wrench, Package, Users, Clock, AlertTriangle, Activity, CheckCircle, Cpu, Download, ChevronDown } from 'lucide-react'
 import { exportAPI } from '../api'
 import { Card, CardContent } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -19,6 +19,9 @@ const statCards = [
   { key: 'totalRepairs', label: 'Total Repairs', icon: Wrench, color: 'text-amber-400', bg: 'bg-gradient-to-br from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20' },
   { key: 'pendingRepairs', label: 'Pending Repairs', icon: Clock, color: 'text-rose-400', bg: 'bg-gradient-to-br from-rose-500/20 to-rose-600/10', border: 'border-rose-500/20' },
   { key: 'completedRepairs', label: 'Completed Repairs', icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-gradient-to-br from-emerald-500/20 to-emerald-600/10', border: 'border-emerald-500/20' },
+  { key: 'totalSpareParts', label: 'Spare Parts', icon: Cpu, color: 'text-cyan-400', bg: 'bg-gradient-to-br from-cyan-500/20 to-cyan-600/10', border: 'border-cyan-500/20' },
+  { key: 'lowStockSpareParts', label: 'Low Stock Parts', icon: AlertTriangle, color: 'text-orange-400', bg: 'bg-gradient-to-br from-orange-500/20 to-orange-600/10', border: 'border-orange-500/20' },
+  { key: 'outOfStockSpareParts', label: 'Out of Stock Parts', icon: Package, color: 'text-red-400', bg: 'bg-gradient-to-br from-red-500/20 to-red-600/10', border: 'border-red-500/20' },
   { key: 'totalInventory', label: 'Inventory Items', icon: Package, color: 'text-blue-400', bg: 'bg-gradient-to-br from-blue-500/20 to-blue-600/10', border: 'border-blue-500/20' },
   { key: 'lowStockItems', label: 'Low Stock Items', icon: AlertTriangle, color: 'text-orange-400', bg: 'bg-gradient-to-br from-orange-500/20 to-orange-600/10', border: 'border-orange-500/20' },
   { key: 'totalTechnicians', label: 'Technicians', icon: Users, color: 'text-indigo-400', bg: 'bg-gradient-to-br from-indigo-500/20 to-indigo-600/10', border: 'border-indigo-500/20' },
@@ -28,6 +31,7 @@ const exportResources = [
   { resource: 'printers', label: 'Printers' },
   { resource: 'repairs', label: 'Repairs' },
   { resource: 'inventory', label: 'Inventory' },
+  { resource: 'spare-parts', label: 'Spare Parts' },
   { resource: 'technicians', label: 'Technicians' },
 ]
 

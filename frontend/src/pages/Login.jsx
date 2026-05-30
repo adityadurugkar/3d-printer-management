@@ -54,8 +54,8 @@ export default function Login() {
               <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/30 mb-5 animate-bounce-in">
                 <Printer className="h-8 w-8 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-white tracking-tight">PrintFlow</h1>
-              <p className="text-white/40 text-sm mt-2 font-medium">Smart 3D Printer Management System</p>
+              <h1 className="text-3xl font-bold text-white tracking-tight">PHN 3D Printer Management</h1>
+              <p className="text-white/40 text-sm mt-2 font-medium">Manufacturing Operations Dashboard</p>
             </div>
 
             <div className="px-8 pb-10">
@@ -150,7 +150,7 @@ export default function Login() {
         </div>
 
         <p className="text-center mt-6 text-white/20 text-xs">
-          © 2026 PrintFlow Enterprise. All rights reserved.
+          © 2026 PHN 3D Printer Management System. All rights reserved.
         </p>
       </div>
     </div>

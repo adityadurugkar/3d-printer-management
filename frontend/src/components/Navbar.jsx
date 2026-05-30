@@ -66,14 +66,14 @@ export default function Navbar({ onMenuClick }) {
                   </div>
                   <div className="p-1.5 space-y-0.5">
                     <button
-                      onClick={() => { setProfileOpen(false); /* profile page */ }}
+                      onClick={() => { setProfileOpen(false); navigate('/settings') }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-foreground/80 hover:bg-muted transition-colors"
                     >
                       <User className="h-4 w-4 text-muted-foreground" />
                       Profile
                     </button>
                     <button
-                      onClick={() => { setProfileOpen(false); /* settings page */ }}
+                      onClick={() => { setProfileOpen(false); navigate('/settings') }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-foreground/80 hover:bg-muted transition-colors"
                     >
                       <Settings className="h-4 w-4 text-muted-foreground" />

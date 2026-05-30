@@ -4,6 +4,7 @@ const Printer = require('../models/Printer');
 const Repair = require('../models/Repair');
 const Inventory = require('../models/Inventory');
 const Technician = require('../models/Technician');
+const SparePart = require('../models/SparePart');
 
 exports.exportPDF = async (req, res) => {
   try {
@@ -28,15 +29,25 @@ exports.exportPDF = async (req, res) => {
         data = await Technician.find();
         title = 'Technicians Report';
         break;
+      case 'spare-parts':
+        data = await SparePart.find();
+        title = 'Spare Parts Report';
+        break;
       default:
         return res.status(400).json({ message: 'Invalid resource' });
     }
+
+    const Setting = require('../models/Setting');
+    const settings = await Setting.findOne();
 
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=${resource}-report.pdf`);
     doc.pipe(res);
 
+    const company = settings?.companyName || 'PHN 3D Printer Management System';
+    doc.fontSize(16).font('Helvetica-Bold').text(company, { align: 'center' });
+    doc.moveDown(0.3);
     doc.fontSize(20).font('Helvetica-Bold').text(title, { align: 'center' });
     doc.moveDown();
     doc.fontSize(10).font('Helvetica').text(`Generated: ${new Date().toLocaleDateString()}`, { align: 'center' });
@@ -97,12 +108,29 @@ exports.exportExcel = async (req, res) => {
         data = await Technician.find();
         title = 'Technicians';
         break;
+      case 'spare-parts':
+        data = await SparePart.find();
+        title = 'Spare Parts';
+        break;
       default:
         return res.status(400).json({ message: 'Invalid resource' });
     }
 
+    const Setting = require('../models/Setting');
+    const settings = await Setting.findOne();
+    const company = settings?.companyName || 'PHN 3D Printer Management System';
+
     const workbook = new ExcelJS.Workbook();
+    workbook.creator = company;
+    workbook.created = new Date();
     const worksheet = workbook.addWorksheet(title);
+
+    worksheet.mergeCells('A1:Z1');
+    const titleCell = worksheet.getCell('A1');
+    titleCell.value = `${company} — ${title}`;
+    titleCell.font = { bold: true, size: 14 };
+    titleCell.alignment = { horizontal: 'center' };
+    worksheet.addRow([]);
 
     if (data.length > 0) {
       const headers = Object.keys(data[0].toObject()).filter(k => !['__v', '_id'].includes(k));
@@ -142,6 +170,11 @@ exports.getDashboardStats = async (req, res) => {
     const totalInventory = await Inventory.countDocuments();
     const lowStockItems = await Inventory.countDocuments({ quantity: { $lte: 5 } });
     const totalTechnicians = await Technician.countDocuments();
+    const totalSpareParts = await SparePart.countDocuments();
+    const lowStockSpareParts = await SparePart.countDocuments({
+      $expr: { $and: [{ $gt: ['$currentStock', 0] }, { $lte: ['$currentStock', '$minimumStock'] }] },
+    });
+    const outOfStockSpareParts = await SparePart.countDocuments({ currentStock: 0 });
 
     const repairsByStatus = await Repair.aggregate([
       { $group: { _id: '$status', count: { $sum: 1 } } },
@@ -188,6 +221,11 @@ exports.getDashboardStats = async (req, res) => {
       .limit(5)
       .select('name brand model status createdAt');
 
+    const recentSpareParts = await SparePart.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('partName category currentStock minimumStock createdAt');
+
     const recentActivity = [
       ...recentRepairs.map(r => ({
         type: 'repair',
@@ -205,6 +243,14 @@ exports.getDashboardStats = async (req, res) => {
         date: p.createdAt,
         status: p.status,
       })),
+      ...recentSpareParts.map(s => ({
+        type: 'sparepart',
+        id: s._id,
+        title: `Spare Part: ${s.partName}`,
+        description: `${s.category} — stock: ${s.currentStock} ${s.unit || 'pcs'}`,
+        date: s.createdAt,
+        status: s.currentStock === 0 ? 'out-of-stock' : s.currentStock <= s.minimumStock ? 'low-stock' : 'in-stock',
+      })),
     ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
 
     res.json({
@@ -216,6 +262,9 @@ exports.getDashboardStats = async (req, res) => {
       totalInventory,
       lowStockItems,
       totalTechnicians,
+      totalSpareParts,
+      lowStockSpareParts,
+      outOfStockSpareParts,
       repairsByStatus,
       printersByBrand,
       printersByModel,

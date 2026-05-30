@@ -1,4 +1,4 @@
-import { Wrench, Printer, Clock, CheckCircle, AlertTriangle, Loader } from 'lucide-react'
+import { Wrench, Printer, Clock, CheckCircle, AlertTriangle, Loader, Package } from 'lucide-react'
 import { cn } from '../lib/utils'
 
 const statusConfig = {
@@ -10,6 +10,9 @@ const statusConfig = {
   inactive: { icon: Clock, color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-800' },
   maintenance: { icon: Loader, color: 'text-amber-500', bg: 'bg-amber-100 dark:bg-amber-900/30' },
   retired: { icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-100 dark:bg-red-900/30' },
+  'in-stock': { icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
+  'low-stock': { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-100 dark:bg-orange-900/30' },
+  'out-of-stock': { icon: Package, color: 'text-red-500', bg: 'bg-red-100 dark:bg-red-900/30' },
 }
 
 function timeAgo(date) {
@@ -41,7 +44,7 @@ export default function RecentActivity({ activities = [] }) {
         <div className="space-y-0">
           {activities.map((activity, i) => {
             const cfg = statusConfig[activity.status] || { icon: Clock, color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-800' }
-            const Icon = activity.type === 'printer' ? Printer : Wrench
+            const Ic = activity.type === 'printer' ? Printer : activity.type === 'sparepart' ? Package : Wrench
 
             return (
               <div
@@ -52,7 +55,7 @@ export default function RecentActivity({ activities = [] }) {
                 )}
               >
                 <div className={cn('p-2 rounded-xl flex-shrink-0', cfg.bg)}>
-                  <Icon className={cn('h-4 w-4', cfg.color)} />
+                  <Ic className={cn('h-4 w-4', cfg.color)} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-foreground truncate">{activity.title}</p>

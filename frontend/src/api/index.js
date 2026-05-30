@@ -65,6 +65,14 @@ export const technicianAPI = {
   delete: (id) => api.delete(`/technicians/${id}`),
 };
 
+export const sparePartAPI = {
+  getAll: (params) => api.get('/spare-parts', { params }),
+  getById: (id) => api.get(`/spare-parts/${id}`),
+  create: (data) => api.post('/spare-parts', data),
+  update: (id, data) => api.put(`/spare-parts/${id}`, data),
+  delete: (id) => api.delete(`/spare-parts/${id}`),
+};
+
 export const exportAPI = {
   getDashboard: () => api.get('/export/dashboard'),
   downloadPDF: (resource) =>
@@ -72,6 +80,26 @@ export const exportAPI = {
 
   downloadExcel: (resource) =>
     api.get(`/export/excel/${resource}`, { responseType: 'blob' }),
+};
+
+export const settingsAPI = {
+  get: () => api.get('/settings'),
+  update: (data) => {
+    if (data instanceof FormData) {
+      return api.put('/settings', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+    }
+    return api.put('/settings', data);
+  },
+  deleteLogo: () => api.delete('/settings/logo'),
+  changePassword: (data) => api.put('/settings/password', data),
+  updateProfile: (data) => {
+    if (data instanceof FormData) {
+      return api.put('/settings/profile', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+    }
+    return api.put('/settings/profile', data);
+  },
+  backup: () => api.get('/settings/backup', { responseType: 'blob' }),
+  restore: (data) => api.post('/settings/restore', data),
 };
 
 export default api;

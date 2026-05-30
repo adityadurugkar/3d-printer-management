@@ -8,6 +8,8 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Cpu,
+  Settings,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 
@@ -16,7 +18,9 @@ const links = [
   { to: '/printers', label: 'Printers', icon: Printer },
   { to: '/repairs', label: 'Repairs', icon: Wrench },
   { to: '/inventory', label: 'Inventory', icon: Package },
+  { to: '/spare-parts', label: 'Spare Parts', icon: Cpu },
   { to: '/technicians', label: 'Technicians', icon: Users },
+  { to: '/settings', label: 'Settings', icon: Settings },
 ]
 
 export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }) {
@@ -54,8 +58,8 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }) 
                 <Printer className="h-5 w-5 text-white" />
               </div>
               <div className="leading-tight">
-                <p className="font-bold text-base text-white">PrintFlow</p>
-                <p className="text-[10px] text-white/35 tracking-wide uppercase">Admin Panel</p>
+                <p className="font-bold text-base text-white">PHN</p>
+                <p className="text-[10px] text-white/35 tracking-wide uppercase">Manufacturing Dashboard</p>
               </div>
             </div>
           )}
@@ -138,8 +142,8 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }) 
         {!collapsed && (
           <div className="p-4 border-t border-white/[0.06]">
             <div className="bg-white/[0.03] rounded-xl p-3 text-center backdrop-blur-md">
-              <p className="text-xs text-white/30">PrintFlow System</p>
-              <p className="text-[10px] text-white/15">v1.0.0 • Enterprise</p>
+              <p className="text-xs text-white/30">PHN 3D Printer Management</p>
+              <p className="text-[10px] text-white/15">v1.0.0 • Manufacturing</p>
             </div>
           </div>
         )}

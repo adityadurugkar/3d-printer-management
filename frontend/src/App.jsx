@@ -11,6 +11,9 @@ import Inventory from './pages/Inventory'
 import InventoryForm from './pages/InventoryForm'
 import Technicians from './pages/Technicians'
 import TechnicianForm from './pages/TechnicianForm'
+import SpareParts from './pages/SpareParts'
+import SparePartForm from './pages/SparePartForm'
+import Settings from './pages/Settings'
 
 export default function App() {
   return (
@@ -28,9 +31,13 @@ export default function App() {
         <Route path="inventory" element={<Inventory />} />
         <Route path="inventory/new" element={<InventoryForm />} />
         <Route path="inventory/:id/edit" element={<InventoryForm />} />
+        <Route path="spare-parts" element={<SpareParts />} />
+        <Route path="spare-parts/new" element={<SparePartForm />} />
+        <Route path="spare-parts/:id/edit" element={<SparePartForm />} />
         <Route path="technicians" element={<Technicians />} />
         <Route path="technicians/new" element={<TechnicianForm />} />
         <Route path="technicians/:id/edit" element={<TechnicianForm />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   )
