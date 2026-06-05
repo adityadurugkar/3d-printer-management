@@ -176,6 +176,43 @@ exports.getDashboardStats = async (req, res) => {
     });
     const outOfStockSpareParts = await SparePart.countDocuments({ currentStock: 0 });
 
+    const activeRepairs = await Repair.countDocuments({ status: 'in-progress' });
+
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const repairHoursThisMonth = await Repair.aggregate([
+      { $match: { endTime: { $gte: monthStart, $lte: now }, status: 'completed' } },
+      { $group: { _id: null, total: { $sum: '$totalHours' } } },
+    ]);
+
+    const fastestSlowest = await Repair.aggregate([
+      { $match: { status: 'completed', totalHours: { $gt: 0 } } },
+      {
+        $group: {
+          _id: null,
+          fastest: { $min: '$totalHours' },
+          slowest: { $max: '$totalHours' },
+        },
+      },
+    ]);
+
+    const avgRepairTimeAgg = await Repair.aggregate([
+      { $match: { status: 'completed', totalHours: { $gt: 0 } } },
+      { $group: { _id: null, avg: { $avg: '$totalHours' } } },
+    ]);
+
+    const avgTechnicianRepairTime = await Repair.aggregate([
+      { $match: { status: 'completed', totalHours: { $gt: 0 } } },
+      {
+        $group: {
+          _id: '$technicianName',
+          avgHours: { $avg: '$totalHours' },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { avgHours: -1 } },
+    ]);
+
     const repairsByStatus = await Repair.aggregate([
       { $group: { _id: '$status', count: { $sum: 1 } } },
     ]);
@@ -254,6 +291,12 @@ exports.getDashboardStats = async (req, res) => {
     ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
 
     res.json({
+      activeRepairs,
+      totalRepairHoursThisMonth: repairHoursThisMonth[0]?.total || 0,
+      fastestRepair: fastestSlowest[0]?.fastest || 0,
+      slowestRepair: fastestSlowest[0]?.slowest || 0,
+      averageRepairTime: avgRepairTimeAgg[0]?.avg || 0,
+      avgTechnicianRepairTime,
       totalPrinters,
       activePrinters,
       totalRepairs,

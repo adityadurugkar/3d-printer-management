@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Edit, Trash2, Wrench, Search } from 'lucide-react'
+import { Plus, Edit, Trash2, Wrench, Search, Play, CheckCircle } from 'lucide-react'
 import { repairAPI } from '../api'
 import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
@@ -14,11 +14,31 @@ const statusVariant = (s) =>
   s === 'in-progress' ? 'info' :
   s === 'pending' ? 'warning' : 'destructive'
 
+function formatDT(d) {
+  if (!d) return '—'
+  const dt = new Date(d)
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const day = String(dt.getDate()).padStart(2, '0')
+  const month = months[dt.getMonth()]
+  const year = dt.getFullYear()
+  let hours = dt.getHours()
+  const minutes = String(dt.getMinutes()).padStart(2, '0')
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12 || 12
+  return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`
+}
+
+function formatHours(h) {
+  if (!h || h === 0) return '—'
+  return h.toFixed(1) + 'h'
+}
+
 export default function Repairs() {
   const [repairs, setRepairs] = useState([])
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState(null)
   const [search, setSearch] = useState('')
+  const [timingLoading, setTimingLoading] = useState(null)
 
   const fetchData = () => {
     setLoading(true)
@@ -32,6 +52,26 @@ export default function Repairs() {
     await repairAPI.delete(deleteId)
     setDeleteId(null)
     fetchData()
+  }
+
+  const handleStart = async (id) => {
+    setTimingLoading(id)
+    try {
+      await repairAPI.startRepair(id)
+      fetchData()
+    } catch { /* ignore */ } finally {
+      setTimingLoading(null)
+    }
+  }
+
+  const handleComplete = async (id) => {
+    setTimingLoading(id)
+    try {
+      await repairAPI.completeRepair(id)
+      fetchData()
+    } catch { /* ignore */ } finally {
+      setTimingLoading(null)
+    }
   }
 
   const filtered = repairs.filter(r =>
@@ -82,8 +122,10 @@ export default function Repairs() {
               <TableRow>
                 <TableHead>Printer</TableHead>
                 <TableHead>Printer #</TableHead>
-                <TableHead>Date</TableHead>
                 <TableHead>Technician</TableHead>
+                <TableHead>Start Time</TableHead>
+                <TableHead>End Time</TableHead>
+                <TableHead>Hours</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -93,13 +135,45 @@ export default function Repairs() {
                 <TableRow key={r._id}>
                   <TableCell className="font-semibold text-foreground">{r.printerName}</TableCell>
                   <TableCell className="font-mono text-xs text-muted-foreground">{r.printerNumber}</TableCell>
-                  <TableCell className="text-foreground/80">{new Date(r.repairDate).toLocaleDateString()}</TableCell>
                   <TableCell className="text-foreground/80">{r.technicianName}</TableCell>
+                  <TableCell className="text-xs text-foreground/70 whitespace-nowrap">{formatDT(r.startTime)}</TableCell>
+                  <TableCell className="text-xs text-foreground/70 whitespace-nowrap">{formatDT(r.endTime)}</TableCell>
+                  <TableCell className="text-foreground/80 font-medium">{formatHours(r.totalHours)}</TableCell>
                   <TableCell>
                     <Badge variant={statusVariant(r.status)}>{r.status}</Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
+                      {r.status === 'pending' && (
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-blue-500/70 hover:text-blue-500 hover:bg-blue-500/10"
+                          onClick={() => handleStart(r._id)}
+                          disabled={timingLoading === r._id}
+                        >
+                          {timingLoading === r._id ? (
+                            <span className="w-3.5 h-3.5 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                          ) : (
+                            <Play className="h-3.5 w-3.5" />
+                          )}
+                        </Button>
+                      )}
+                      {r.status === 'in-progress' && (
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-emerald-500/70 hover:text-emerald-500 hover:bg-emerald-500/10"
+                          onClick={() => handleComplete(r._id)}
+                          disabled={timingLoading === r._id}
+                        >
+                          {timingLoading === r._id ? (
+                            <span className="w-3.5 h-3.5 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+                          ) : (
+                            <CheckCircle className="h-3.5 w-3.5" />
+                          )}
+                        </Button>
+                      )}
                       <Button variant="ghost" size="icon-sm" asChild>
                         <Link to={`/repairs/${r._id}/edit`}>
                           <Edit className="h-3.5 w-3.5" />
@@ -130,7 +204,7 @@ export default function Repairs() {
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-16 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-16 text-muted-foreground">
                     <Wrench className="h-10 w-10 mx-auto mb-3 opacity-30" />
                     <p className="font-medium text-foreground/60">{search ? 'No repairs match your search' : 'No repairs found'}</p>
                     {!search && (

@@ -58,6 +58,55 @@ exports.updateRepair = async (req, res) => {
   }
 };
 
+exports.startRepair = async (req, res) => {
+  try {
+    const repair = await Repair.findById(req.params.id);
+    if (!repair) return res.status(404).json({ message: 'Repair not found' });
+    if (repair.status !== 'pending') return res.status(400).json({ message: 'Only pending repairs can be started' });
+
+    repair.startTime = new Date();
+    repair.status = 'in-progress';
+    await repair.save();
+
+    createAndEmitNotification({
+      type: 'repair_started',
+      title: 'Repair Started',
+      message: `${repair.printerName} — started by ${repair.technicianName}`,
+      resourceId: repair._id.toString(),
+      resourceModel: 'Repair',
+    });
+
+    res.json(repair);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.completeRepair = async (req, res) => {
+  try {
+    const repair = await Repair.findById(req.params.id);
+    if (!repair) return res.status(404).json({ message: 'Repair not found' });
+    if (repair.status !== 'in-progress') return res.status(400).json({ message: 'Only in-progress repairs can be completed' });
+
+    repair.endTime = new Date();
+    repair.totalHours = (repair.endTime - repair.startTime) / 3600000;
+    repair.status = 'completed';
+    await repair.save();
+
+    createAndEmitNotification({
+      type: 'repair_completed',
+      title: 'Repair Completed',
+      message: `${repair.printerName} — completed in ${repair.totalHours.toFixed(1)}h by ${repair.technicianName}`,
+      resourceId: repair._id.toString(),
+      resourceModel: 'Repair',
+    });
+
+    res.json(repair);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.deleteRepair = async (req, res) => {
   try {
     const repair = await Repair.findByIdAndDelete(req.params.id);

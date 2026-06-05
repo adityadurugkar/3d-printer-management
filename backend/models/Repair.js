@@ -36,6 +36,18 @@ const repairSchema = new mongoose.Schema({
     enum: ['pending', 'in-progress', 'completed', 'cancelled'],
     default: 'pending',
   },
+  startTime: {
+    type: Date,
+    default: null,
+  },
+  endTime: {
+    type: Date,
+    default: null,
+  },
+  totalHours: {
+    type: Number,
+    default: 0,
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Repair', repairSchema);

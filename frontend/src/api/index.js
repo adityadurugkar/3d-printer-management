@@ -47,6 +47,8 @@ export const repairAPI = {
   create: (data) => api.post('/repairs', data),
   update: (id, data) => api.put(`/repairs/${id}`, data),
   delete: (id) => api.delete(`/repairs/${id}`),
+  startRepair: (id) => api.put(`/repairs/${id}/start`),
+  completeRepair: (id) => api.put(`/repairs/${id}/complete`),
 };
 
 export const inventoryAPI = {

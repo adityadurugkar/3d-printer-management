@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Printer, Wrench, Package, Users, Clock, AlertTriangle, Activity, CheckCircle, Cpu, Download, ChevronDown } from 'lucide-react'
+import { Printer, Wrench, Package, Users, Clock, AlertTriangle, Activity, CheckCircle, Cpu, Download, ChevronDown, Zap } from 'lucide-react'
 import { exportAPI } from '../api'
 import { Card, CardContent } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -11,6 +11,7 @@ import MonthlyRepairsChart from '../components/charts/MonthlyRepairsChart'
 import InventoryStockChart from '../components/charts/InventoryStockChart'
 import TechnicianWorkloadChart from '../components/charts/TechnicianWorkloadChart'
 import RecentActivity from '../components/RecentActivity'
+import RepairAvgTimeChart from '../components/charts/RepairAvgTimeChart'
 import { cn } from '../lib/utils'
 
 const statCards = [
@@ -19,6 +20,9 @@ const statCards = [
   { key: 'totalRepairs', label: 'Total Repairs', icon: Wrench, color: 'text-amber-400', bg: 'bg-gradient-to-br from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20' },
   { key: 'pendingRepairs', label: 'Pending Repairs', icon: Clock, color: 'text-rose-400', bg: 'bg-gradient-to-br from-rose-500/20 to-rose-600/10', border: 'border-rose-500/20' },
   { key: 'completedRepairs', label: 'Completed Repairs', icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-gradient-to-br from-emerald-500/20 to-emerald-600/10', border: 'border-emerald-500/20' },
+  { key: 'activeRepairs', label: 'Active Repairs', icon: Clock, color: 'text-blue-400', bg: 'bg-gradient-to-br from-blue-500/20 to-blue-600/10', border: 'border-blue-500/20' },
+  { key: 'totalRepairHoursThisMonth', label: 'Repair Hours (Month)', icon: Clock, color: 'text-amber-400', bg: 'bg-gradient-to-br from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20', format: 'float' },
+  { key: 'averageRepairTime', label: 'Average Repair Time', icon: Clock, color: 'text-indigo-400', bg: 'bg-gradient-to-br from-indigo-500/20 to-indigo-600/10', border: 'border-indigo-500/20', format: 'float' },
   { key: 'totalSpareParts', label: 'Spare Parts', icon: Cpu, color: 'text-cyan-400', bg: 'bg-gradient-to-br from-cyan-500/20 to-cyan-600/10', border: 'border-cyan-500/20' },
   { key: 'lowStockSpareParts', label: 'Low Stock Parts', icon: AlertTriangle, color: 'text-orange-400', bg: 'bg-gradient-to-br from-orange-500/20 to-orange-600/10', border: 'border-orange-500/20' },
   { key: 'outOfStockSpareParts', label: 'Out of Stock Parts', icon: Package, color: 'text-red-400', bg: 'bg-gradient-to-br from-red-500/20 to-red-600/10', border: 'border-red-500/20' },
@@ -96,7 +100,7 @@ export default function Dashboard() {
       {/* KPI Cards */}
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {statCards.map(({ key, label, icon: Icon, color, bg, border }, i) => (
+          {statCards.map(({ key, label, icon: Icon, color, bg, border, format }, i) => (
             <div
               key={key}
               className="stat-card animate-fade-in-up"
@@ -107,7 +111,11 @@ export default function Dashboard() {
                   <div className="space-y-1.5">
                     <p className="text-xs sm:text-sm text-muted-foreground font-medium">{label}</p>
                     <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                      <AnimatedCounter value={stats[key] || 0} />
+                      {format === 'float' ? (
+                        <span>{Number(stats[key] || 0).toFixed(1)}</span>
+                      ) : (
+                        <AnimatedCounter value={stats[key] || 0} />
+                      )}
                     </p>
                   </div>
                   <div className={cn('kpi-icon', bg)}>
@@ -153,6 +161,15 @@ export default function Dashboard() {
           <div className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>
             <TechnicianWorkloadChart data={stats.technicianWorkload} />
           </div>
+          <div className="animate-fade-in-up" style={{ animationDelay: '350ms' }}>
+            <RepairAvgTimeChart data={stats.avgTechnicianRepairTime} />
+          </div>
+        </div>
+      )}
+
+      {/* Charts Row 4 */}
+      {stats && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <div className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
             <RecentActivity activities={stats.recentActivity} />
           </div>

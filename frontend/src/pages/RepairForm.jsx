@@ -1,12 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Clock } from 'lucide-react'
 import { repairAPI, printerAPI } from '../api'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 import { Select } from '../components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+
+function toDatetimeLocal(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  if (isNaN(d.getTime())) return ''
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
 
 export default function RepairForm() {
   const navigate = useNavigate()
@@ -16,6 +24,7 @@ export default function RepairForm() {
   const [form, setForm] = useState({
     printerId: '', printerName: '', printerNumber: '', repairDate: '',
     technicianName: '', problemDescription: '', status: 'pending',
+    startTime: '', endTime: '',
   })
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -27,10 +36,21 @@ export default function RepairForm() {
         setForm({
           ...data,
           repairDate: data.repairDate?.split('T')[0] || '',
+          startTime: toDatetimeLocal(data.startTime),
+          endTime: toDatetimeLocal(data.endTime),
         })
       }).catch(() => navigate('/repairs'))
     }
   }, [id])
+
+  const totalHours = useMemo(() => {
+    if (form.startTime && form.endTime) {
+      const start = new Date(form.startTime).getTime()
+      const end = new Date(form.endTime).getTime()
+      if (end > start) return ((end - start) / 3600000).toFixed(1)
+    }
+    return '0.0'
+  }, [form.startTime, form.endTime])
 
   const handlePrinterSelect = (printerId) => {
     const p = printers.find(p => p._id === printerId)
@@ -44,10 +64,11 @@ export default function RepairForm() {
     setError('')
     setSaving(true)
     try {
+      const payload = { ...form, totalHours: parseFloat(totalHours) || 0 }
       if (isEdit) {
-        await repairAPI.update(id, form)
+        await repairAPI.update(id, payload)
       } else {
-        await repairAPI.create(form)
+        await repairAPI.create(payload)
       }
       navigate('/repairs')
     } catch (err) {
@@ -108,6 +129,21 @@ export default function RepairForm() {
               <div className="space-y-2">
                 <Label htmlFor="technicianName">Technician Name</Label>
                 <Input id="technicianName" value={form.technicianName} onChange={(e) => setForm({...form, technicianName: e.target.value})} required placeholder="e.g. John Smith" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="startTime">Start Time</Label>
+                <Input type="datetime-local" id="startTime" value={form.startTime} onChange={(e) => setForm({...form, startTime: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="endTime">End Time</Label>
+                <Input type="datetime-local" id="endTime" value={form.endTime} onChange={(e) => setForm({...form, endTime: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="totalHours">Total Repair Hours</Label>
+                <div className="relative">
+                  <Input id="totalHours" value={totalHours} readOnly className="bg-muted/50 text-foreground font-semibold cursor-not-allowed border-dashed pr-8" />
+                  <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
