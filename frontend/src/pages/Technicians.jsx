@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Edit, Trash2, Users, Search } from 'lucide-react'
-import { technicianAPI } from '../api'
+import { technicianAPI, repairAPI } from '../api'
+import { useSort } from '../hooks/useSort'
 import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
 import { Input } from '../components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, SortableHead } from '../components/ui/table'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog'
 
 const statusVariant = (s) =>
@@ -15,16 +16,25 @@ const statusVariant = (s) =>
 
 export default function Technicians() {
   const [technicians, setTechnicians] = useState([])
+  const [repairs, setRepairs] = useState([])
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState(null)
   const [search, setSearch] = useState('')
 
   const fetchData = () => {
     setLoading(true)
-    technicianAPI.getAll().then(({ data }) => setTechnicians(data)).catch(() => {}).finally(() => setLoading(false))
+    Promise.all([
+      technicianAPI.getAll(),
+      repairAPI.getAll(),
+    ]).then(([{ data: techs }, { data: reps }]) => {
+      setTechnicians(techs)
+      setRepairs(reps)
+    }).catch(() => {}).finally(() => setLoading(false))
   }
 
   useEffect(() => { fetchData() }, [])
+
+  const { sortColumn, sortDirection, toggleSort, getSortedData } = useSort()
 
   const handleDelete = async () => {
     if (!deleteId) return
@@ -33,11 +43,29 @@ export default function Technicians() {
     fetchData()
   }
 
-  const filtered = technicians.filter(t =>
-    t.name?.toLowerCase().includes(search.toLowerCase()) ||
-    t.email?.toLowerCase().includes(search.toLowerCase()) ||
-    t.specialization?.toLowerCase().includes(search.toLowerCase())
+  const enriched = useMemo(() =>
+    technicians.map((t) => ({
+      ...t,
+      repairsCompleted: repairs.filter(
+        (r) => r.technicianName === t.name && r.status === 'completed'
+      ).length,
+      activeRepairs: repairs.filter(
+        (r) => r.technicianName === t.name && r.status === 'in-progress'
+      ).length,
+    })),
+    [technicians, repairs]
   )
+
+  const filtered = useMemo(() =>
+    enriched.filter(t =>
+      t.name?.toLowerCase().includes(search.toLowerCase()) ||
+      t.email?.toLowerCase().includes(search.toLowerCase()) ||
+      t.specialization?.toLowerCase().includes(search.toLowerCase())
+    ),
+    [enriched, search]
+  )
+
+  const sorted = useMemo(() => getSortedData(filtered), [filtered, getSortedData])
 
   if (loading) return (
     <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -79,21 +107,31 @@ export default function Technicians() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
+                <SortableHead column="name" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Name</SortableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Specialization</TableHead>
-                <TableHead>Status</TableHead>
+                <SortableHead column="repairsCompleted" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Completed</SortableHead>
+                <SortableHead column="activeRepairs" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Active</SortableHead>
+                <SortableHead column="status" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Status</SortableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((t) => (
+              {sorted.map((t) => (
                 <TableRow key={t._id}>
                   <TableCell className="font-semibold text-foreground">{t.name}</TableCell>
                   <TableCell className="text-foreground/80">{t.email}</TableCell>
                   <TableCell className="text-muted-foreground">{t.phone || '—'}</TableCell>
                   <TableCell className="text-foreground/80">{t.specialization || '—'}</TableCell>
+                  <TableCell className="text-center font-medium text-foreground/80">{t.repairsCompleted}</TableCell>
+                  <TableCell className="text-center">
+                    {t.activeRepairs > 0 ? (
+                      <span className="font-medium text-amber-500">{t.activeRepairs}</span>
+                    ) : (
+                      <span className="text-muted-foreground">0</span>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={statusVariant(t.status)}>{t.status}</Badge>
                   </TableCell>
@@ -129,7 +167,7 @@ export default function Technicians() {
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-16 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-16 text-muted-foreground">
                     <Users className="h-10 w-10 mx-auto mb-3 opacity-30" />
                     <p className="font-medium text-foreground/60">{search ? 'No technicians match your search' : 'No technicians found'}</p>
                     {!search && (

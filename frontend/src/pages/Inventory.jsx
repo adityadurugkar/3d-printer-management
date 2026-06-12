@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Edit, Trash2, Package, Search } from 'lucide-react'
 import { inventoryAPI } from '../api'
+import { useSort } from '../hooks/useSort'
 import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
 import { Input } from '../components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, SortableHead } from '../components/ui/table'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog'
 import { cn } from '../lib/utils'
 
@@ -23,6 +24,8 @@ export default function Inventory() {
 
   useEffect(() => { fetchData() }, [])
 
+  const { sortColumn, sortDirection, toggleSort, getSortedData } = useSort()
+
   const handleDelete = async () => {
     if (!deleteId) return
     await inventoryAPI.delete(deleteId)
@@ -30,10 +33,15 @@ export default function Inventory() {
     fetchData()
   }
 
-  const filtered = items.filter(item =>
-    item.partName?.toLowerCase().includes(search.toLowerCase()) ||
-    item.supplier?.toLowerCase().includes(search.toLowerCase())
+  const filtered = useMemo(() =>
+    items.filter(item =>
+      item.partName?.toLowerCase().includes(search.toLowerCase()) ||
+      item.supplier?.toLowerCase().includes(search.toLowerCase())
+    ),
+    [items, search]
   )
+
+  const sorted = useMemo(() => getSortedData(filtered), [filtered, getSortedData])
 
   if (loading) return (
     <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -75,16 +83,16 @@ export default function Inventory() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Part Name</TableHead>
-                <TableHead>Quantity</TableHead>
+                <SortableHead column="partName" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Part Name</SortableHead>
+                <SortableHead column="quantity" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Quantity</SortableHead>
                 <TableHead>Compatible Printers</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead>Supplier</TableHead>
+                <SortableHead column="supplier" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Supplier</SortableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((item) => (
+              {sorted.map((item) => (
                 <TableRow key={item._id}>
                   <TableCell className="font-semibold text-foreground">{item.partName}</TableCell>
                   <TableCell>

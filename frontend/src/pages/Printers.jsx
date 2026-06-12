@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Edit, Trash2, Printer, Search } from 'lucide-react'
 import { printerAPI } from '../api'
+import { useSort } from '../hooks/useSort'
 import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
 import { Input } from '../components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, SortableHead } from '../components/ui/table'
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from '../components/ui/dialog'
@@ -29,6 +30,8 @@ export default function Printers() {
 
   useEffect(() => { fetchData() }, [])
 
+  const { sortColumn, sortDirection, toggleSort, getSortedData } = useSort()
+
   const handleDelete = async () => {
     if (!deleteId) return
     await printerAPI.delete(deleteId)
@@ -36,11 +39,16 @@ export default function Printers() {
     fetchData()
   }
 
-  const filtered = printers.filter(p =>
-    p.name?.toLowerCase().includes(search.toLowerCase()) ||
-    p.brand?.toLowerCase().includes(search.toLowerCase()) ||
-    p.serialNumber?.toLowerCase().includes(search.toLowerCase())
+  const filtered = useMemo(() =>
+    printers.filter(p =>
+      p.name?.toLowerCase().includes(search.toLowerCase()) ||
+      p.brand?.toLowerCase().includes(search.toLowerCase()) ||
+      p.serialNumber?.toLowerCase().includes(search.toLowerCase())
+    ),
+    [printers, search]
   )
+
+  const sorted = useMemo(() => getSortedData(filtered), [filtered, getSortedData])
 
   if (loading) return (
     <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -82,16 +90,17 @@ export default function Printers() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Brand</TableHead>
+                <SortableHead column="name" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Name</SortableHead>
+                <SortableHead column="brand" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Type</SortableHead>
                 <TableHead>Model</TableHead>
-                <TableHead>Serial</TableHead>
-                <TableHead>Status</TableHead>
+                <SortableHead column="serialNumber" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Serial</SortableHead>
+                <SortableHead column="status" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Status</SortableHead>
+                <SortableHead column="createdAt" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Date Added</SortableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((p) => (
+              {sorted.map((p) => (
                 <TableRow key={p._id}>
                   <TableCell className="font-semibold text-foreground">{p.name}</TableCell>
                   <TableCell className="text-foreground/80">{p.brand}</TableCell>
@@ -99,6 +108,9 @@ export default function Printers() {
                   <TableCell className="text-muted-foreground font-mono text-xs">{p.serialNumber}</TableCell>
                   <TableCell>
                     <Badge variant={statusVariant(p.status)}>{p.status}</Badge>
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                    {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
@@ -132,7 +144,7 @@ export default function Printers() {
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-16 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-16 text-muted-foreground">
                     <Printer className="h-10 w-10 mx-auto mb-3 opacity-30" />
                     <p className="font-medium text-foreground/60">{search ? 'No printers match your search' : 'No printers found'}</p>
                     {!search && (

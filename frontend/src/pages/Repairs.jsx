@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Edit, Trash2, Wrench, Search, Play, CheckCircle } from 'lucide-react'
 import { repairAPI } from '../api'
+import { useSort } from '../hooks/useSort'
 import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
 import { Input } from '../components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, SortableHead } from '../components/ui/table'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog'
 
 const statusVariant = (s) =>
@@ -47,6 +48,8 @@ export default function Repairs() {
 
   useEffect(() => { fetchData() }, [])
 
+  const { sortColumn, sortDirection, toggleSort, getSortedData } = useSort()
+
   const handleDelete = async () => {
     if (!deleteId) return
     await repairAPI.delete(deleteId)
@@ -74,11 +77,16 @@ export default function Repairs() {
     }
   }
 
-  const filtered = repairs.filter(r =>
-    r.printerName?.toLowerCase().includes(search.toLowerCase()) ||
-    r.technicianName?.toLowerCase().includes(search.toLowerCase()) ||
-    r.printerNumber?.toLowerCase().includes(search.toLowerCase())
+  const filtered = useMemo(() =>
+    repairs.filter(r =>
+      r.printerName?.toLowerCase().includes(search.toLowerCase()) ||
+      r.technicianName?.toLowerCase().includes(search.toLowerCase()) ||
+      r.printerNumber?.toLowerCase().includes(search.toLowerCase())
+    ),
+    [repairs, search]
   )
+
+  const sorted = useMemo(() => getSortedData(filtered), [filtered, getSortedData])
 
   if (loading) return (
     <div className="flex items-center justify-center h-64 text-muted-foreground">
@@ -122,20 +130,22 @@ export default function Repairs() {
               <TableRow>
                 <TableHead>Printer</TableHead>
                 <TableHead>Printer #</TableHead>
-                <TableHead>Technician</TableHead>
-                <TableHead>Start Time</TableHead>
-                <TableHead>End Time</TableHead>
-                <TableHead>Hours</TableHead>
-                <TableHead>Status</TableHead>
+                <SortableHead column="technicianName" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Technician</SortableHead>
+                <SortableHead column="repairDate" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Date</SortableHead>
+                <SortableHead column="startTime" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Start Time</SortableHead>
+                <SortableHead column="endTime" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>End Time</SortableHead>
+                <SortableHead column="totalHours" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Hours</SortableHead>
+                <SortableHead column="status" sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort}>Status</SortableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((r) => (
+              {sorted.map((r) => (
                 <TableRow key={r._id}>
                   <TableCell className="font-semibold text-foreground">{r.printerName}</TableCell>
                   <TableCell className="font-mono text-xs text-muted-foreground">{r.printerNumber}</TableCell>
                   <TableCell className="text-foreground/80">{r.technicianName}</TableCell>
+                  <TableCell className="text-xs text-foreground/70 whitespace-nowrap">{formatDT(r.repairDate)}</TableCell>
                   <TableCell className="text-xs text-foreground/70 whitespace-nowrap">{formatDT(r.startTime)}</TableCell>
                   <TableCell className="text-xs text-foreground/70 whitespace-nowrap">{formatDT(r.endTime)}</TableCell>
                   <TableCell className="text-foreground/80 font-medium">{formatHours(r.totalHours)}</TableCell>
@@ -204,7 +214,7 @@ export default function Repairs() {
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-16 text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center py-16 text-muted-foreground">
                     <Wrench className="h-10 w-10 mx-auto mb-3 opacity-30" />
                     <p className="font-medium text-foreground/60">{search ? 'No repairs match your search' : 'No repairs found'}</p>
                     {!search && (
