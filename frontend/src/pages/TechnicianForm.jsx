@@ -61,7 +61,7 @@ export default function TechnicianForm() {
         </div>
       )}
 
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">

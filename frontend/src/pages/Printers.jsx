@@ -59,9 +59,14 @@ export default function Printers() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <div>
-          <h1 className="page-title">Printers</h1>
-          <p className="page-subtitle">Manage your 3D printer fleet</p>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <Printer className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="page-title">Printers</h1>
+            <p className="page-subtitle">Manage your 3D printer fleet</p>
+          </div>
         </div>
         <Button asChild className="h-9 gap-1.5">
           <Link to="/printers/new">
@@ -70,7 +75,7 @@ export default function Printers() {
         </Button>
       </div>
 
-      <Card className="overflow-hidden border-border/40">
+      <Card className="overflow-hidden glass-card">
         <CardHeader className="flex flex-row items-center justify-between py-4">
           <CardTitle>
             All Printers

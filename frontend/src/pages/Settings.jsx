@@ -145,8 +145,15 @@ export default function Settings() {
   return (
     <div className="page-container">
       <div className="mb-6">
-        <h1 className="page-title">Settings</h1>
-        <p className="page-subtitle">Manage system configuration and preferences</p>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-500 to-slate-600 flex items-center justify-center shadow-lg shadow-gray-500/20">
+            <Settings className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="page-title">Settings</h1>
+            <p className="page-subtitle">Manage system configuration and preferences</p>
+          </div>
+        </div>
       </div>
 
       {message.text && (
@@ -181,7 +188,7 @@ export default function Settings() {
 
       {activeTab === 'company' && (
         <form onSubmit={handleCompanySave}>
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
@@ -284,7 +291,7 @@ export default function Settings() {
 
       {activeTab === 'profile' && (
         <form onSubmit={handleProfileSave}>
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
@@ -337,7 +344,7 @@ export default function Settings() {
 
       {activeTab === 'password' && (
         <form onSubmit={handlePasswordChange}>
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
@@ -379,7 +386,7 @@ export default function Settings() {
 
       {activeTab === 'backup' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
@@ -396,7 +403,7 @@ export default function Settings() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">

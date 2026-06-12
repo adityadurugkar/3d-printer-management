@@ -69,9 +69,14 @@ export default function SpareParts() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <div>
-          <h1 className="page-title">Spare Parts</h1>
-          <p className="page-subtitle">Manage spare parts inventory for 3D printers</p>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg shadow-pink-500/20">
+            <Cpu className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="page-title">Spare Parts</h1>
+            <p className="page-subtitle">Manage spare parts inventory for 3D printers</p>
+          </div>
         </div>
         <Button asChild className="h-9 gap-1.5">
           <Link to="/spare-parts/new">
@@ -109,7 +114,7 @@ export default function SpareParts() {
         </Select>
       </div>
 
-      <Card className="overflow-hidden border-border/40">
+      <Card className="overflow-hidden glass-card">
         <CardHeader className="flex flex-row items-center justify-between py-4">
           <CardTitle>
             Spare Parts

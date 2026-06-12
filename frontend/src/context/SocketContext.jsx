@@ -4,7 +4,7 @@ import api from '../api'
 
 const SOCKET_URL = import.meta.env.DEV ? 'http://localhost:5000' : 'https://threed-printer-management.onrender.com'
 
-const SocketContext = createContext(null)
+export const SocketContext = createContext(null)
 
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null)

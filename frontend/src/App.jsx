@@ -3,6 +3,9 @@ import Layout from './components/Layout'
 import PrivateRoute from './components/PrivateRoute'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import Analytics from './pages/Analytics'
+import Reports from './pages/Reports'
+import Notifications from './pages/Notifications'
 import Printers from './pages/Printers'
 import PrinterForm from './pages/PrinterForm'
 import Repairs from './pages/Repairs'
@@ -22,6 +25,9 @@ export default function App() {
       <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="analytics" element={<Analytics />} />
+        <Route path="reports" element={<Reports />} />
+        <Route path="notifications" element={<Notifications />} />
         <Route path="printers" element={<Printers />} />
         <Route path="printers/new" element={<PrinterForm />} />
         <Route path="printers/:id/edit" element={<PrinterForm />} />

@@ -97,9 +97,14 @@ export default function Repairs() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <div>
-          <h1 className="page-title">Repairs</h1>
-          <p className="page-subtitle">Track and manage printer repairs</p>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+            <Wrench className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="page-title">Repairs</h1>
+            <p className="page-subtitle">Track and manage printer repairs</p>
+          </div>
         </div>
         <Button asChild className="h-9 gap-1.5">
           <Link to="/repairs/new">
@@ -108,7 +113,7 @@ export default function Repairs() {
         </Button>
       </div>
 
-      <Card className="overflow-hidden border-border/40">
+      <Card className="overflow-hidden glass-card">
         <CardHeader className="flex flex-row items-center justify-between py-4">
           <CardTitle>
             All Repairs

@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Chatbot from './chat/Chatbot'
+import { motion } from 'framer-motion'
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -27,8 +28,14 @@ export default function Layout() {
           onMenuClick={() => setSidebarOpen(true)}
           sidebarCollapsed={sidebarCollapsed}
         />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.03),transparent_50%)]">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-premium">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Outlet />
+          </motion.div>
         </main>
       </div>
       <Chatbot />

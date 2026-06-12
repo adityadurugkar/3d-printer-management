@@ -128,6 +128,19 @@ export default {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-6px)' },
         },
+        'glow': {
+          '0%, 100%': { boxShadow: '0 0 20px hsl(var(--primary) / 0.3)' },
+          '50%': { boxShadow: '0 0 40px hsl(var(--primary) / 0.5)' },
+        },
+        'progress-fill': {
+          from: { width: '0%' },
+          to: { width: 'var(--progress-width)' },
+        },
+        'border-flow': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
       },
       animation: {
         'fade-in': 'fade-in 0.5s ease-out',
@@ -145,6 +158,9 @@ export default {
         'spin-slow': 'spin-slow 3s linear infinite',
         'bounce-in': 'bounce-in 0.5s ease-out',
         'float': 'float 3s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite',
+        'progress-fill': 'progress-fill 1s ease-out forwards',
+        'border-flow': 'border-flow 3s ease infinite',
       },
     },
   },

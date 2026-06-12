@@ -76,9 +76,14 @@ export default function Technicians() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <div>
-          <h1 className="page-title">Technicians</h1>
-          <p className="page-subtitle">Manage your technical staff</p>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <Users className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="page-title">Technicians</h1>
+            <p className="page-subtitle">Manage your technical staff</p>
+          </div>
         </div>
         <Button asChild className="h-9 gap-1.5">
           <Link to="/technicians/new">
@@ -87,7 +92,7 @@ export default function Technicians() {
         </Button>
       </div>
 
-      <Card className="overflow-hidden border-border/40">
+      <Card className="overflow-hidden glass-card">
         <CardHeader className="flex flex-row items-center justify-between py-4">
           <CardTitle>
             All Technicians
