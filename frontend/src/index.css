@@ -350,7 +350,7 @@
   }
 
   .dark .sidebar-item {
-    @apply relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-white/40 hover:text-white/80 hover:bg-white/[0.04];
+    @apply relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-white/60 hover:text-white/90 hover:bg-white/[0.04];
   }
 
   .dark .sidebar-item-active {
@@ -366,7 +366,7 @@
   }
 
   .dark .sidebar-item-icon-inactive {
-    @apply text-white/40 group-hover:text-white/70 group-hover:bg-white/[0.04];
+    @apply text-white/60 group-hover:text-white/85 group-hover:bg-white/[0.04];
   }
 
   .dark .printer-card {

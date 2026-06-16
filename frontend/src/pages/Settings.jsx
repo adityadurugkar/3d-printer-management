@@ -176,8 +176,8 @@ export default function Settings() {
             onClick={() => setActiveTab(id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-sm font-medium transition-all ${
               activeTab === id
-                ? 'text-primary border-b-2 border-primary bg-primary/5'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                ? 'text-gray-900 dark:text-white font-semibold border-b-2 border-primary bg-primary/[0.08]'
+                : 'text-gray-600 dark:text-white/65 hover:text-gray-900 dark:hover:text-white hover:bg-muted/50 dark:hover:bg-white/[0.06]'
             }`}
           >
             <Icon className="h-4 w-4" />

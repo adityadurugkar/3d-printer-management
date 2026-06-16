@@ -3,15 +3,15 @@ const router = express.Router();
 const {
   getSpareParts, getSparePart, createSparePart, updateSparePart, deleteSparePart,
 } = require('../controllers/sparePartController');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 
 router.route('/')
   .get(protect, getSpareParts)
-  .post(protect, createSparePart);
+  .post(protect, authorize('admin'), createSparePart);
 
 router.route('/:id')
   .get(protect, getSparePart)
-  .put(protect, updateSparePart)
-  .delete(protect, deleteSparePart);
+  .put(protect, authorize('admin'), updateSparePart)
+  .delete(protect, authorize('admin'), deleteSparePart);
 
 module.exports = router;

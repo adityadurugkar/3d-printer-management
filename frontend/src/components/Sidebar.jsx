@@ -2,11 +2,14 @@ import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Printer, Wrench, Package, Cpu, Users,
   BarChart3, FileText, Bell, Settings, X, ChevronLeft, ChevronRight,
-  ChevronDown, Activity,
+  ChevronDown, Activity, Shield,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../lib/utils'
+import { getRole } from '../lib/auth'
 import { motion, AnimatePresence } from 'framer-motion'
+
+const role = getRole()
 
 const links = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -15,6 +18,7 @@ const links = [
   { to: '/inventory', label: 'Inventory', icon: Package },
   { to: '/spare-parts', label: 'Spare Parts', icon: Cpu },
   { to: '/technicians', label: 'Technicians', icon: Users },
+  ...(role === 'admin' ? [{ to: '/users', label: 'Users', icon: Shield }] : []),
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/reports', label: 'Reports', icon: FileText },
 ]
@@ -33,6 +37,7 @@ const statusColors = {
   technicians: 'from-indigo-400 to-blue-500',
   analytics: 'from-cyan-400 to-sky-500',
   reports: 'from-emerald-400 to-green-500',
+  users: 'from-amber-400 to-orange-500',
 }
 
 function getSection(path) {
@@ -156,16 +161,16 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }) 
                     'relative flex items-center justify-center transition-all duration-200',
                     collapsed ? 'w-9 h-9 rounded-lg' : 'w-9 h-9 rounded-lg',
                     isActive && collapsed ? 'bg-primary/20 text-primary shadow-lg shadow-primary/10' : '',
-                    !isActive && collapsed ? 'text-white/40 group-hover:text-white/70 group-hover:bg-white/[0.04]' : '',
+                    !isActive && collapsed ? 'text-white/60 group-hover:text-white/85 group-hover:bg-white/[0.04]' : '',
                     isActive && !collapsed ? 'text-primary' : '',
-                    !isActive && !collapsed ? 'text-white/40 group-hover:text-white/70' : ''
+                    !isActive && !collapsed ? 'text-white/60 group-hover:text-white/85' : ''
                   )}>
                     <Icon className={cn('h-[18px] w-[18px] flex-shrink-0 transition-transform', isActive && 'scale-110')} />
                   </div>
                   {!collapsed && (
                     <span className={cn(
                       'relative tracking-wide',
-                      isActive ? 'text-white font-semibold' : 'text-white/50 group-hover:text-white/80'
+                      isActive ? 'text-white font-semibold' : 'text-white/70 group-hover:text-white/95'
                     )}>
                       {label}
                     </span>
@@ -204,14 +209,14 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }) 
                   <div className={cn(
                     'flex items-center justify-center transition-all duration-200',
                     collapsed ? 'w-9 h-9 rounded-lg' : 'w-9 h-9 rounded-lg',
-                    isActive ? 'bg-primary/20 text-primary' : 'text-white/40 group-hover:text-white/70'
+                    isActive ? 'bg-primary/20 text-primary' : 'text-white/60 group-hover:text-white/85'
                   )}>
                     <Icon className={cn('h-[18px] w-[18px] flex-shrink-0')} />
                   </div>
                   {!collapsed && (
                     <span className={cn(
                       'relative tracking-wide',
-                      isActive ? 'text-white font-semibold' : 'text-white/50 group-hover:text-white/80'
+                      isActive ? 'text-white font-semibold' : 'text-white/70 group-hover:text-white/95'
                     )}>
                       {label}
                     </span>
@@ -227,7 +232,7 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }) 
           <button
             onClick={onToggleCollapse}
             className={cn(
-              'w-full flex items-center rounded-xl text-sm font-medium transition-all duration-200 text-white/30 hover:text-white/60 hover:bg-white/[0.04]',
+              'w-full flex items-center rounded-xl text-sm font-medium transition-all duration-200 text-white/40 hover:text-white/70 hover:bg-white/[0.04]',
               collapsed ? 'justify-center h-10' : 'gap-3 px-3 py-2.5'
             )}
           >

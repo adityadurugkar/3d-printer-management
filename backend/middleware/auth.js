@@ -15,10 +15,25 @@ const protect = async (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: 'User not found' });
     }
+    if (req.user.status === 'inactive') {
+      return res.status(403).json({ message: 'Account deactivated' });
+    }
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Not authorized, token failed' });
   }
 };
 
-module.exports = { protect };
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: `Role '${req.user.role}' not authorized for this action` });
+    }
+    next();
+  };
+};
+
+module.exports = { protect, authorize };

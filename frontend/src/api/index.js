@@ -29,8 +29,20 @@ api.interceptors.response.use(
 
 export const authAPI = {
   login: (data) => api.post('/auth/login', data),
-  register: (data) => api.post('/auth/register', data),
   getMe: () => api.get('/auth/me'),
+};
+
+export const userAPI = {
+  getAll: () => api.get('/users'),
+  getById: (id) => api.get(`/users/${id}`),
+  create: (data) => api.post('/users', data),
+  update: (id, data) => api.put(`/users/${id}`, data),
+  delete: (id) => api.delete(`/users/${id}`),
+};
+
+export const auditLogAPI = {
+  getAll: (params) => api.get('/audit-logs', { params }),
+  getById: (id) => api.get(`/audit-logs/${id}`),
 };
 
 export const printerAPI = {

@@ -39,8 +39,8 @@ export default function Reports() {
             <FileText className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Reports</h1>
-            <p className="text-sm text-white/40">Generate and export professional reports</p>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Reports</h1>
+            <p className="text-sm text-gray-600 dark:text-white/40">Generate and export professional reports</p>
           </div>
         </div>
       </motion.div>
@@ -59,8 +59,8 @@ export default function Reports() {
                 <Icon className={cn('h-5 w-5', iconColor)} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-white">{label}</h3>
-                <p className="text-xs text-white/40 mt-0.5">{desc}</p>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{label}</h3>
+                <p className="text-xs text-gray-600 dark:text-white/40 mt-0.5">{desc}</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -69,7 +69,7 @@ export default function Reports() {
                 size="sm"
                 onClick={() => handleExport(resource, 'pdf')}
                 disabled={exporting === `${resource}-pdf`}
-                className="flex-1 bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-white/20 text-white/50 hover:text-white text-xs h-8"
+                className="flex-1 bg-black/[0.03] dark:bg-white/[0.03] border-gray-300 dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.06] hover:border-gray-400 dark:hover:border-white/20 text-gray-700 dark:text-white/50 hover:text-gray-900 dark:hover:text-white text-xs h-8"
               >
                 <FileDown className="h-3.5 w-3.5 mr-1.5" />
                 {exporting === `${resource}-pdf` ? 'Exporting...' : 'PDF'}
@@ -79,7 +79,7 @@ export default function Reports() {
                 size="sm"
                 onClick={() => handleExport(resource, 'xlsx')}
                 disabled={exporting === `${resource}-xlsx`}
-                className="flex-1 bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-white/20 text-white/50 hover:text-white text-xs h-8"
+                className="flex-1 bg-black/[0.03] dark:bg-white/[0.03] border-gray-300 dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.06] hover:border-gray-400 dark:hover:border-white/20 text-gray-700 dark:text-white/50 hover:text-gray-900 dark:hover:text-white text-xs h-8"
               >
                 <FileSpreadsheet className="h-3.5 w-3.5 mr-1.5" />
                 {exporting === `${resource}-xlsx` ? 'Exporting...' : 'Excel'}

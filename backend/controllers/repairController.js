@@ -1,4 +1,5 @@
 const Repair = require('../models/Repair');
+const AuditLog = require('../models/AuditLog');
 const { createAndEmitNotification } = require('./notificationController');
 
 exports.getRepairs = async (req, res) => {
@@ -30,6 +31,13 @@ exports.createRepair = async (req, res) => {
       resourceId: repair._id.toString(),
       resourceModel: 'Repair',
     });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'create',
+      resource: 'repair',
+      resourceId: repair._id,
+      details: { printerName: repair.printerName, status: repair.status },
+    });
     res.status(201).json(repair);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -52,6 +60,13 @@ exports.updateRepair = async (req, res) => {
         resourceModel: 'Repair',
       });
     }
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'update',
+      resource: 'repair',
+      resourceId: repair._id,
+      details: { printerName: repair.printerName, status: repair.status },
+    });
     res.json(repair);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -74,6 +89,14 @@ exports.startRepair = async (req, res) => {
       message: `${repair.printerName} — started by ${repair.technicianName}`,
       resourceId: repair._id.toString(),
       resourceModel: 'Repair',
+    });
+
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'start',
+      resource: 'repair',
+      resourceId: repair._id,
+      details: { printerName: repair.printerName, technicianName: repair.technicianName },
     });
 
     res.json(repair);
@@ -101,6 +124,14 @@ exports.completeRepair = async (req, res) => {
       resourceModel: 'Repair',
     });
 
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'complete',
+      resource: 'repair',
+      resourceId: repair._id,
+      details: { printerName: repair.printerName, totalHours: repair.totalHours, technicianName: repair.technicianName },
+    });
+
     res.json(repair);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -111,6 +142,13 @@ exports.deleteRepair = async (req, res) => {
   try {
     const repair = await Repair.findByIdAndDelete(req.params.id);
     if (!repair) return res.status(404).json({ message: 'Repair not found' });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'delete',
+      resource: 'repair',
+      resourceId: req.params.id,
+      details: { printerName: repair.printerName },
+    });
     res.json({ message: 'Repair deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });

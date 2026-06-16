@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import PrivateRoute from './components/PrivateRoute'
+import RoleGuard from './components/RoleGuard'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Analytics from './pages/Analytics'
@@ -17,6 +18,7 @@ import TechnicianForm from './pages/TechnicianForm'
 import SpareParts from './pages/SpareParts'
 import SparePartForm from './pages/SparePartForm'
 import Settings from './pages/Settings'
+import Users from './pages/Users'
 
 export default function App() {
   return (
@@ -43,6 +45,7 @@ export default function App() {
         <Route path="technicians" element={<Technicians />} />
         <Route path="technicians/new" element={<TechnicianForm />} />
         <Route path="technicians/:id/edit" element={<TechnicianForm />} />
+        <Route path="users" element={<RoleGuard roles={['admin']}><Users /></RoleGuard>} />
         <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>

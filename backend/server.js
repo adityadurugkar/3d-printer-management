@@ -7,6 +7,8 @@ const { initSocket } = require('./config/socket');
 
 const path = require('path');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const auditLogRoutes = require('./routes/auditLogs');
 const printerRoutes = require('./routes/printers');
 const repairRoutes = require('./routes/repairs');
 const inventoryRoutes = require('./routes/inventory');
@@ -23,6 +25,8 @@ app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/audit-logs', auditLogRoutes);
 app.use('/api/printers', printerRoutes);
 app.use('/api/repairs', repairRoutes);
 app.use('/api/inventory', inventoryRoutes);

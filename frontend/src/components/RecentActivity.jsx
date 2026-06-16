@@ -64,16 +64,16 @@ export default function RecentActivity({ activities = [] }) {
     <div className="glass-card rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-1">Live Feed</h3>
-          <h2 className="text-sm font-bold text-white">Recent Activity</h2>
+          <h3 className="text-[11px] font-semibold text-gray-600 dark:text-white/40 uppercase tracking-wider mb-1">Live Feed</h3>
+          <h2 className="text-sm font-bold text-gray-900 dark:text-white">Recent Activity</h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-white/30 bg-white/[0.04] px-2.5 py-1 rounded-full font-medium">
+          <span className="text-[11px] text-gray-500 dark:text-white/30 bg-gray-100 dark:bg-white/[0.04] px-2.5 py-1 rounded-full font-medium">
             {liveActivities.length} events
           </span>
           <button
             onClick={handleRefresh}
-            className="p-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/[0.04] transition-all"
+            className="p-1.5 rounded-lg text-gray-500 dark:text-white/30 hover:text-gray-800 dark:hover:text-white/60 hover:bg-gray-100 dark:hover:bg-white/[0.04] transition-all"
           >
             <RefreshCw className={cn('h-3.5 w-3.5 transition-transform', refreshing && 'animate-spin')} />
           </button>
@@ -81,7 +81,7 @@ export default function RecentActivity({ activities = [] }) {
       </div>
 
       {liveActivities.length === 0 ? (
-        <div className="flex items-center justify-center h-[200px] text-white/20 text-sm">No recent activity</div>
+        <div className="flex items-center justify-center h-[200px] text-gray-400 dark:text-white/20 text-sm">No recent activity</div>
       ) : (
         <div className="space-y-0 max-h-[320px] overflow-y-auto pr-1 custom-scrollbar">
           <AnimatePresence initial={false}>
@@ -98,17 +98,17 @@ export default function RecentActivity({ activities = [] }) {
                   transition={{ duration: 0.2 }}
                   className={cn(
                     'flex items-start gap-3 py-2.5',
-                    i < liveActivities.length - 1 && 'border-b border-white/[0.04]'
+                    i < liveActivities.length - 1 && 'border-b border-gray-200 dark:border-white/[0.04]'
                   )}
                 >
                   <div className={cn('p-1.5 rounded-lg flex-shrink-0', cfg.bg)}>
                     <Ic className={cn('h-3.5 w-3.5', cfg.color)} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white/80 truncate">{activity.title}</p>
-                    <p className="text-xs text-white/40 mt-0.5">{activity.description}</p>
+                    <p className="text-sm font-medium text-gray-800 dark:text-white/80 truncate">{activity.title}</p>
+                    <p className="text-xs text-gray-600 dark:text-white/40 mt-0.5">{activity.description}</p>
                   </div>
-                  <span className="text-[11px] text-white/30 flex-shrink-0 pt-0.5">{timeAgo(activity.date)}</span>
+                  <span className="text-[11px] text-gray-500 dark:text-white/30 flex-shrink-0 pt-0.5">{timeAgo(activity.date)}</span>
                 </motion.div>
               )
             })}

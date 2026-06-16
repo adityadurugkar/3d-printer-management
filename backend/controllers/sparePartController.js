@@ -1,4 +1,5 @@
 const SparePart = require('../models/SparePart');
+const AuditLog = require('../models/AuditLog');
 const { createAndEmitNotification } = require('./notificationController');
 
 exports.getSpareParts = async (req, res) => {
@@ -51,6 +52,14 @@ exports.createSparePart = async (req, res) => {
       });
     }
 
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'create',
+      resource: 'spare-part',
+      resourceId: part._id,
+      details: { partName: part.partName, currentStock: part.currentStock },
+    });
+
     res.status(201).json(part);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -75,6 +84,14 @@ exports.updateSparePart = async (req, res) => {
       });
     }
 
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'update',
+      resource: 'spare-part',
+      resourceId: part._id,
+      details: { partName: part.partName, currentStock: part.currentStock },
+    });
+
     res.json(part);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -85,6 +102,13 @@ exports.deleteSparePart = async (req, res) => {
   try {
     const part = await SparePart.findByIdAndDelete(req.params.id);
     if (!part) return res.status(404).json({ message: 'Spare part not found' });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'delete',
+      resource: 'spare-part',
+      resourceId: req.params.id,
+      details: { partName: part.partName },
+    });
     res.json({ message: 'Spare part deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });

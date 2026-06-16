@@ -1,4 +1,5 @@
 const Printer = require('../models/Printer');
+const AuditLog = require('../models/AuditLog');
 const { createAndEmitNotification } = require('./notificationController');
 
 exports.getPrinters = async (req, res) => {
@@ -30,6 +31,13 @@ exports.createPrinter = async (req, res) => {
       resourceId: printer._id.toString(),
       resourceModel: 'Printer',
     });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'create',
+      resource: 'printer',
+      resourceId: printer._id,
+      details: { name: printer.name, brand: printer.brand, model: printer.model, serialNumber: printer.serialNumber },
+    });
     res.status(201).json(printer);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -50,6 +58,13 @@ exports.updatePrinter = async (req, res) => {
       resourceId: printer._id.toString(),
       resourceModel: 'Printer',
     });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'update',
+      resource: 'printer',
+      resourceId: printer._id,
+      details: { name: printer.name, status: printer.status },
+    });
     res.json(printer);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -60,6 +75,13 @@ exports.deletePrinter = async (req, res) => {
   try {
     const printer = await Printer.findByIdAndDelete(req.params.id);
     if (!printer) return res.status(404).json({ message: 'Printer not found' });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'delete',
+      resource: 'printer',
+      resourceId: req.params.id,
+      details: { name: printer.name, brand: printer.brand, model: printer.model },
+    });
     res.json({ message: 'Printer deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });

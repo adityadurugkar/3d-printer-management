@@ -113,8 +113,8 @@ export default function Dashboard() {
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 flex items-center justify-center mx-auto mb-4 neon-glow">
           <Activity className="h-7 w-7 text-cyan-400 animate-pulse-soft" />
         </div>
-        <p className="text-white/60 font-medium">Loading enterprise dashboard...</p>
-        <p className="text-white/30 text-sm mt-1">Fetching real-time metrics</p>
+        <p className="text-gray-700 dark:text-white/60 font-medium">Loading enterprise dashboard...</p>
+        <p className="text-gray-500 dark:text-white/30 text-sm mt-1">Fetching real-time metrics</p>
       </div>
     </div>
   )
@@ -133,17 +133,17 @@ export default function Dashboard() {
               <Zap className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Dashboard</h1>
-              <p className="text-sm text-white/40">Real-time overview of your 3D printer fleet</p>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Dashboard</h1>
+              <p className="text-sm text-gray-600 dark:text-white/40">Real-time overview of your 3D printer fleet</p>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative inline-block">
-            <Button variant="outline" size="sm" className="h-9 gap-2 pr-3 bg-card/50 border-border/60 text-white/70 hover:text-white hover:bg-card/80">
+            <Button variant="outline" size="sm" className="h-9 gap-2 pr-3 bg-card/50 border-border/60 text-gray-700 dark:text-white/70 hover:text-gray-900 dark:hover:text-white hover:bg-card/80">
               <Download className="h-3.5 w-3.5" />
               Export
-              <ChevronDown className="h-3 w-3 text-white/40" />
+              <ChevronDown className="h-3 w-3 text-gray-500 dark:text-white/40" />
             </Button>
           </div>
         </div>
@@ -158,10 +158,10 @@ export default function Dashboard() {
       >
         {exportResources.map(({ resource, label }) => (
           <div key={resource} className="flex gap-1">
-            <Button variant="ghost" size="sm" onClick={() => handleExport(resource, 'pdf')} disabled={exporting === `${resource}-pdf`} className="h-7 text-[11px] px-2.5 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.04]">
+            <Button variant="ghost" size="sm" onClick={() => handleExport(resource, 'pdf')} disabled={exporting === `${resource}-pdf`} className="h-7 text-[11px] px-2.5 rounded-lg text-gray-600 dark:text-white/40 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.04]">
               PDF {label}
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => handleExport(resource, 'xlsx')} disabled={exporting === `${resource}-xlsx`} className="h-7 text-[11px] px-2.5 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.04]">
+            <Button variant="ghost" size="sm" onClick={() => handleExport(resource, 'xlsx')} disabled={exporting === `${resource}-xlsx`} className="h-7 text-[11px] px-2.5 rounded-lg text-gray-600 dark:text-white/40 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.04]">
               Excel {label}
             </Button>
           </div>
@@ -186,8 +186,8 @@ export default function Dashboard() {
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-1.5">
-                  <p className="text-xs text-white/50 font-medium">{label}</p>
-                  <p className="text-2xl font-bold tracking-tight text-white">
+                  <p className="text-xs text-gray-600 dark:text-white/50 font-medium">{label}</p>
+                  <p className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                     <AnimatedCounter value={stats[key] || 0} />
                   </p>
                 </div>
@@ -208,9 +208,9 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Printer className="h-4 w-4 text-cyan-400" />
-              <h2 className="text-sm font-semibold text-white">Printer Fleet Monitor</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Printer Fleet Monitor</h2>
             </div>
-            <Button variant="ghost" size="sm" asChild className="text-xs text-white/40 hover:text-white h-7">
+            <Button variant="ghost" size="sm" asChild className="text-xs text-gray-600 dark:text-white/40 hover:text-gray-900 dark:hover:text-white h-7">
               <Link to="/printers">View All Printers</Link>
             </Button>
           </div>
@@ -224,8 +224,8 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="glass-card rounded-2xl p-8 text-center">
-              <Printer className="h-10 w-10 mx-auto mb-3 text-white/20" />
-              <p className="text-white/40 text-sm">No printers registered yet</p>
+              <Printer className="h-10 w-10 mx-auto mb-3 text-gray-400 dark:text-white/20" />
+              <p className="text-gray-600 dark:text-white/40 text-sm">No printers registered yet</p>
             </div>
           )}
 
@@ -233,7 +233,7 @@ export default function Dashboard() {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-cyan-400" />
-              <h2 className="text-sm font-semibold text-white">Live Analytics</h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Live Analytics</h2>
             </div>
 
             {/* Charts Row 1 */}
@@ -301,7 +301,7 @@ export default function Dashboard() {
             <div className="glass-card rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Wrench className="h-4 w-4 text-amber-400" />
-                <h3 className="text-sm font-semibold text-white">Recent Repairs</h3>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Recent Repairs</h3>
               </div>
               <div className="space-y-0">
                 {recentRepairs.length > 0 ? recentRepairs.map((r, i) => (
@@ -309,7 +309,7 @@ export default function Dashboard() {
                     key={r._id}
                     className={cn(
                       'flex items-center gap-4 py-3',
-                      i < recentRepairs.length - 1 && 'border-b border-white/[0.04]'
+                      i < recentRepairs.length - 1 && 'border-b border-gray-200 dark:border-white/[0.04]'
                     )}
                   >
                     <div className={cn(
@@ -324,8 +324,8 @@ export default function Dashboard() {
                        <Clock className="h-4 w-4" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white/80 truncate">{r.printerName || 'Unknown Printer'}</p>
-                      <p className="text-xs text-white/40">{r.technicianName || 'Unassigned'} • {r.totalHours ? `${r.totalHours.toFixed(1)}h` : '—'}</p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/80 truncate">{r.printerName || 'Unknown Printer'}</p>
+                      <p className="text-xs text-gray-600 dark:text-white/40">{r.technicianName || 'Unassigned'} • {r.totalHours ? `${r.totalHours.toFixed(1)}h` : '—'}</p>
                     </div>
                     <Badge variant={
                       r.status === 'completed' ? 'success' :
@@ -336,7 +336,7 @@ export default function Dashboard() {
                     </Badge>
                   </div>
                 )) : (
-                  <p className="text-sm text-white/30 text-center py-6">No recent repairs</p>
+                  <p className="text-sm text-gray-500 dark:text-white/30 text-center py-6">No recent repairs</p>
                 )}
               </div>
             </div>
@@ -354,12 +354,12 @@ export default function Dashboard() {
           >
             <div className="flex items-center gap-2 mb-4">
               <Layers className="h-4 w-4 text-cyan-400" />
-              <h3 className="text-sm font-semibold text-white">System Overview</h3>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">System Overview</h3>
             </div>
 
             <div className="space-y-3">
               {[
-                { label: 'Total Printers', value: printerStatusCounts.active + printerStatusCounts.idle + printerStatusCounts.maintenance + printerStatusCounts.offline, color: 'text-white', bar: 'bg-gradient-to-r from-cyan-400 to-cyan-500' },
+                { label: 'Total Printers', value: printerStatusCounts.active + printerStatusCounts.idle + printerStatusCounts.maintenance + printerStatusCounts.offline, color: 'text-gray-900 dark:text-white', bar: 'bg-gradient-to-r from-cyan-400 to-cyan-500' },
                 { label: 'Printing', value: printerStatusCounts.active, color: 'text-emerald-400', bar: 'bg-gradient-to-r from-emerald-400 to-emerald-500' },
                 { label: 'Idle', value: printerStatusCounts.idle, color: 'text-blue-400', bar: 'bg-gradient-to-r from-blue-400 to-blue-500' },
                 { label: 'Under Repair', value: printerStatusCounts.repair, color: 'text-rose-400', bar: 'bg-gradient-to-r from-rose-400 to-rose-500' },
@@ -371,10 +371,10 @@ export default function Dashboard() {
                 return (
                   <div key={label}>
                     <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-white/50">{label}</span>
+                      <span className="text-gray-600 dark:text-white/50">{label}</span>
                       <span className={cn('font-semibold', color)}>{value}</span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-gray-200 dark:bg-white/[0.06] overflow-hidden">
                       <div className={cn('h-full rounded-full transition-all duration-700', bar)} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
@@ -390,21 +390,21 @@ export default function Dashboard() {
             transition={{ delay: 0.25 }}
             className="glass-card rounded-2xl p-5"
           >
-            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
               <Zap className="h-4 w-4 text-amber-400" />
               Quick Actions
             </h3>
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" size="sm" asChild className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-white/20 text-white/60 hover:text-white text-xs h-9">
+              <Button variant="outline" size="sm" asChild className="bg-black/[0.03] dark:bg-white/[0.03] border-gray-300 dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.06] hover:border-gray-400 dark:hover:border-white/20 text-gray-700 dark:text-white/60 hover:text-gray-900 dark:hover:text-white text-xs h-9">
                 <Link to="/printers/new"><Printer className="h-3.5 w-3.5 mr-1.5" />Add Printer</Link>
               </Button>
-              <Button variant="outline" size="sm" asChild className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-white/20 text-white/60 hover:text-white text-xs h-9">
+              <Button variant="outline" size="sm" asChild className="bg-black/[0.03] dark:bg-white/[0.03] border-gray-300 dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.06] hover:border-gray-400 dark:hover:border-white/20 text-gray-700 dark:text-white/60 hover:text-gray-900 dark:hover:text-white text-xs h-9">
                 <Link to="/repairs/new"><Wrench className="h-3.5 w-3.5 mr-1.5" />New Repair</Link>
               </Button>
-              <Button variant="outline" size="sm" asChild className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-white/20 text-white/60 hover:text-white text-xs h-9">
+              <Button variant="outline" size="sm" asChild className="bg-black/[0.03] dark:bg-white/[0.03] border-gray-300 dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.06] hover:border-gray-400 dark:hover:border-white/20 text-gray-700 dark:text-white/60 hover:text-gray-900 dark:hover:text-white text-xs h-9">
                 <Link to="/inventory/new"><Package className="h-3.5 w-3.5 mr-1.5" />Add Part</Link>
               </Button>
-              <Button variant="outline" size="sm" asChild className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] hover:border-white/20 text-white/60 hover:text-white text-xs h-9">
+              <Button variant="outline" size="sm" asChild className="bg-black/[0.03] dark:bg-white/[0.03] border-gray-300 dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.06] hover:border-gray-400 dark:hover:border-white/20 text-gray-700 dark:text-white/60 hover:text-gray-900 dark:hover:text-white text-xs h-9">
                 <Link to="/technicians/new"><Users className="h-3.5 w-3.5 mr-1.5" />Add Tech</Link>
               </Button>
             </div>

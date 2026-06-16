@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Printer, Mail, Lock, UserIcon, Eye, EyeOff } from 'lucide-react'
+import { Printer, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { authAPI } from '../api'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
@@ -8,8 +8,7 @@ import { Label } from '../components/ui/label'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [isRegister, setIsRegister] = useState(false)
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -20,8 +19,7 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const fn = isRegister ? authAPI.register : authAPI.login
-      const { data } = await fn(form)
+      const { data } = await authAPI.login(form)
       localStorage.setItem('user', JSON.stringify(data))
       navigate('/dashboard')
     } catch (err) {
@@ -67,21 +65,6 @@ export default function Login() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {isRegister && (
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-xs font-medium uppercase tracking-wider">Full Name</Label>
-                    <div className="relative">
-                      <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-                      <Input
-                        placeholder="John Doe"
-                        value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-violet-500/50 focus:ring-violet-500/20"
-                      />
-                    </div>
-                  </div>
-                )}
-
                 <div className="space-y-2">
                   <Label className="text-white/70 text-xs font-medium uppercase tracking-wider">Email Address</Label>
                   <div className="relative">
@@ -127,24 +110,13 @@ export default function Login() {
                       <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       Signing in...
                     </span>
-                  ) : isRegister ? 'Create Account' : 'Sign In'}
+                  ) : 'Sign In'}
                 </Button>
               </form>
 
-              <div className="mt-6 text-center">
-                <p className="text-white/40 text-sm">
-                  {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
-                  <button
-                    className="text-violet-400 hover:text-violet-300 font-semibold transition-colors"
-                    onClick={() => {
-                      setIsRegister(!isRegister)
-                      setError('')
-                    }}
-                  >
-                    {isRegister ? 'Sign in' : 'Register'}
-                  </button>
-                </p>
-              </div>
+              <p className="mt-6 text-center text-white/30 text-xs">
+                Authorized personnel only. Contact your administrator for access.
+              </p>
             </div>
           </div>
         </div>

@@ -24,7 +24,7 @@ export default function Analytics() {
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 flex items-center justify-center mx-auto mb-4">
           <BarChart3 className="h-7 w-7 text-cyan-400 animate-pulse-soft" />
         </div>
-        <p className="text-white/60 font-medium">Loading analytics...</p>
+        <p className="text-gray-700 dark:text-white/60 font-medium">Loading analytics...</p>
       </div>
     </div>
   )
@@ -37,8 +37,8 @@ export default function Analytics() {
             <BarChart3 className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Analytics</h1>
-            <p className="text-sm text-white/40">Deep insights into your manufacturing operations</p>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Analytics</h1>
+            <p className="text-sm text-gray-600 dark:text-white/40">Deep insights into your manufacturing operations</p>
           </div>
         </div>
       </motion.div>

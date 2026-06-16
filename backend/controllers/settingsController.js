@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const Setting = require('../models/Setting');
 const User = require('../models/User');
+const AuditLog = require('../models/AuditLog');
 
 exports.getSettings = async (req, res) => {
   try {
@@ -30,6 +31,12 @@ exports.updateSettings = async (req, res) => {
       settings.logo = '/uploads/' + req.file.filename;
     }
     await settings.save();
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'update',
+      resource: 'settings',
+      details: { companyName: settings.companyName },
+    });
     res.json(settings);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -43,6 +50,11 @@ exports.deleteLogo = async (req, res) => {
       settings.logo = '';
       await settings.save();
     }
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'delete_logo',
+      resource: 'settings',
+    });
     res.json({ message: 'Logo removed' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -69,6 +81,12 @@ exports.changePassword = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
     await user.save();
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'change_password',
+      resource: 'auth',
+      details: {},
+    });
     res.json({ message: 'Password changed successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -83,6 +101,12 @@ exports.updateProfile = async (req, res) => {
     if (email) update.email = email;
     if (req.file) update.avatar = '/uploads/' + req.file.filename;
     const user = await User.findByIdAndUpdate(req.user.id, update, { new: true }).select('-password');
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'update_profile',
+      resource: 'auth',
+      details: { name: user.name, email: user.email },
+    });
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -106,6 +130,12 @@ exports.backupData = async (req, res) => {
       spareParts: await SparePart.find(),
       settings: await Setting.findOne(),
     };
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'backup',
+      resource: 'settings',
+      details: { recordCount: { printers: backup.printers.length, repairs: backup.repairs.length, inventory: backup.inventoryItems.length } },
+    });
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Content-Disposition', `attachment; filename=backup-${Date.now()}.json`);
     res.json(backup);
@@ -132,6 +162,12 @@ exports.restoreData = async (req, res) => {
     if (data.inventoryItems) await Inventory.insertMany(data.inventoryItems);
     if (data.technicians) await Technician.insertMany(data.technicians);
     if (data.spareParts) await SparePart.insertMany(data.spareParts);
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'restore',
+      resource: 'settings',
+      details: { recordCount: { printers: data.printers?.length || 0, repairs: data.repairs?.length || 0 } },
+    });
     res.json({ message: 'Data restored successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });

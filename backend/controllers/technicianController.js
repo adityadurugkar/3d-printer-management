@@ -1,4 +1,5 @@
 const Technician = require('../models/Technician');
+const AuditLog = require('../models/AuditLog');
 const { createAndEmitNotification } = require('./notificationController');
 
 exports.getTechnicians = async (req, res) => {
@@ -23,6 +24,13 @@ exports.getTechnician = async (req, res) => {
 exports.createTechnician = async (req, res) => {
   try {
     const technician = await Technician.create(req.body);
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'create',
+      resource: 'technician',
+      resourceId: technician._id,
+      details: { name: technician.name, specialization: technician.specialization },
+    });
     res.status(201).json(technician);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -43,6 +51,13 @@ exports.updateTechnician = async (req, res) => {
       resourceId: technician._id.toString(),
       resourceModel: 'Technician',
     });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'update',
+      resource: 'technician',
+      resourceId: technician._id,
+      details: { name: technician.name, status: technician.status },
+    });
     res.json(technician);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -53,6 +68,13 @@ exports.deleteTechnician = async (req, res) => {
   try {
     const technician = await Technician.findByIdAndDelete(req.params.id);
     if (!technician) return res.status(404).json({ message: 'Technician not found' });
+    await AuditLog.create({
+      user: req.user._id,
+      action: 'delete',
+      resource: 'technician',
+      resourceId: req.params.id,
+      details: { name: technician.name },
+    });
     res.json({ message: 'Technician deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
