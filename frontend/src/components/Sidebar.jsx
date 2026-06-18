@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Printer, Wrench, Package, Cpu, Users,
   BarChart3, FileText, Bell, Settings, X, ChevronLeft, ChevronRight,
-  ChevronDown, Activity, Shield,
+  ChevronDown, Activity, Shield, ClipboardList,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../lib/utils'
@@ -13,6 +13,7 @@ const role = getRole()
 
 const links = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+  ...(role === 'technician' ? [{ to: '/tech-dashboard', label: 'My Tasks', icon: ClipboardList }] : []),
   { to: '/printers', label: 'Printers', icon: Printer },
   { to: '/repairs', label: 'Repairs', icon: Wrench },
   { to: '/inventory', label: 'Inventory', icon: Package },
@@ -38,6 +39,7 @@ const statusColors = {
   analytics: 'from-cyan-400 to-sky-500',
   reports: 'from-emerald-400 to-green-500',
   users: 'from-amber-400 to-orange-500',
+  'tech-dashboard': 'from-cyan-400 to-blue-500',
 }
 
 function getSection(path) {

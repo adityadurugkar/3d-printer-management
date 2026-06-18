@@ -1,4 +1,5 @@
 const Technician = require('../models/Technician');
+const Repair = require('../models/Repair');
 const AuditLog = require('../models/AuditLog');
 const { createAndEmitNotification } = require('./notificationController');
 
@@ -61,6 +62,43 @@ exports.updateTechnician = async (req, res) => {
     res.json(technician);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+exports.getTechnicianDashboard = async (req, res) => {
+  try {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
+
+    const repairs = await Repair.find({
+      $or: [
+        { technicianEmail: { $exists: true, $ne: '' } },
+        { technicianName: { $exists: true, $ne: '' } },
+      ],
+    }).sort({ createdAt: -1 }).limit(200);
+
+    const myRepairs = repairs.filter(r =>
+      r.technicianEmail?.toLowerCase() === req.user?.email?.toLowerCase() ||
+      r.technicianName?.toLowerCase() === req.user?.name?.toLowerCase()
+    );
+
+    res.json({
+      todayTasks: myRepairs.filter(r => {
+        const d = r.repairDate || r.createdAt;
+        return d >= todayStart && d < todayEnd;
+      }).length,
+      pending: myRepairs.filter(r => r.status === 'pending').length,
+      inProgress: myRepairs.filter(r => r.status === 'in-progress').length,
+      completed: myRepairs.filter(r => r.status === 'completed').length,
+      overdue: myRepairs.filter(r =>
+        (r.status === 'pending' || r.status === 'in-progress') &&
+        r.dueDate && new Date(r.dueDate) < now
+      ).length,
+      recentRepairs: myRepairs.slice(0, 10),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

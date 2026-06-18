@@ -19,14 +19,18 @@ import SpareParts from './pages/SpareParts'
 import SparePartForm from './pages/SparePartForm'
 import Settings from './pages/Settings'
 import Users from './pages/Users'
+import TechnicianDashboard from './pages/TechnicianDashboard'
+import RepairComplete from './pages/RepairComplete'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/repairs/:id/complete" element={<RepairComplete />} />
       <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="tech-dashboard" element={<TechnicianDashboard />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="reports" element={<Reports />} />
         <Route path="notifications" element={<Notifications />} />

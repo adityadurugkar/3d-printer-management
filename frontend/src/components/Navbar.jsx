@@ -41,11 +41,13 @@ export default function Navbar({ onMenuClick, sidebarCollapsed }) {
 
   const pageNames = {
     '/dashboard': 'Dashboard',
+    '/tech-dashboard': 'My Dashboard',
     '/printers': 'Printers',
     '/repairs': 'Repairs',
     '/inventory': 'Inventory',
     '/spare-parts': 'Spare Parts',
     '/technicians': 'Technicians',
+    '/users': 'Users',
     '/analytics': 'Analytics',
     '/reports': 'Reports',
     '/notifications': 'Notifications',

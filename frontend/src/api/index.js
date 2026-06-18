@@ -56,11 +56,17 @@ export const printerAPI = {
 export const repairAPI = {
   getAll: () => api.get('/repairs'),
   getById: (id) => api.get(`/repairs/${id}`),
+  getByTicket: (ticket) => api.get(`/repairs/ticket/${ticket}`),
   create: (data) => api.post('/repairs', data),
   update: (id, data) => api.put(`/repairs/${id}`, data),
   delete: (id) => api.delete(`/repairs/${id}`),
   startRepair: (id) => api.put(`/repairs/${id}/start`),
   completeRepair: (id) => api.put(`/repairs/${id}/complete`),
+  assignRepair: (id, data) => api.put(`/repairs/${id}/assign`, data),
+  submitCompletion: (id, data) => api.post(`/repairs/${id}/complete-form`, data),
+  verifyRepair: (id, data) => api.put(`/repairs/${id}/verify`, data),
+  getTechnicianRepairs: (email) => api.get(`/repairs/technician?email=${email}`),
+  getStats: () => api.get('/repairs/stats'),
 };
 
 export const inventoryAPI = {

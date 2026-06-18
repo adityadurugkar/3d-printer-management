@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Save, Clock } from 'lucide-react'
-import { repairAPI, printerAPI } from '../api'
+import { repairAPI, printerAPI, technicianAPI } from '../api'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
@@ -21,21 +21,25 @@ export default function RepairForm() {
   const { id } = useParams()
   const isEdit = Boolean(id)
   const [printers, setPrinters] = useState([])
+  const [technicians, setTechnicians] = useState([])
   const [form, setForm] = useState({
     printerId: '', printerName: '', printerNumber: '', repairDate: '',
-    technicianName: '', problemDescription: '', status: 'pending',
-    startTime: '', endTime: '',
+    technicianName: '', technicianEmail: '', problemDescription: '',
+    priority: 'medium', dueDate: '', estimatedRepairTime: '',
+    status: 'pending', startTime: '', endTime: '',
   })
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     printerAPI.getAll().then(({ data }) => setPrinters(data)).catch(() => {})
+    technicianAPI.getAll().then(({ data }) => setTechnicians(data)).catch(() => {})
     if (isEdit) {
       repairAPI.getById(id).then(({ data }) => {
         setForm({
           ...data,
           repairDate: data.repairDate?.split('T')[0] || '',
+          dueDate: data.dueDate?.split('T')[0] || '',
           startTime: toDatetimeLocal(data.startTime),
           endTime: toDatetimeLocal(data.endTime),
         })
@@ -59,6 +63,11 @@ export default function RepairForm() {
     }
   }
 
+  const selectTechnician = (techId) => {
+    const t = technicians.find(tech => tech._id === techId)
+    if (t) setForm({ ...form, technicianName: t.name, technicianEmail: t.email })
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -79,7 +88,7 @@ export default function RepairForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto page-container">
+    <div className="max-w-3xl mx-auto page-container">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/repairs')}>
           <ArrowLeft className="h-5 w-5" />
@@ -127,8 +136,42 @@ export default function RepairForm() {
                 <Input type="date" id="repairDate" value={form.repairDate} onChange={(e) => setForm({...form, repairDate: e.target.value})} required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="technicianName">Technician Name</Label>
-                <Input id="technicianName" value={form.technicianName} onChange={(e) => setForm({...form, technicianName: e.target.value})} required placeholder="e.g. John Smith" />
+                <Label htmlFor="technicianName">Technician</Label>
+                <div className="flex gap-2">
+                  <select
+                    onChange={(e) => selectTechnician(e.target.value)}
+                    className="w-1/3 h-10 rounded-xl border border-border/60 bg-card px-3 text-sm focus:outline-none"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Select</option>
+                    {technicians.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
+                  </select>
+                  <Input
+                    className="flex-1"
+                    id="technicianName"
+                    value={form.technicianName}
+                    onChange={(e) => setForm({...form, technicianName: e.target.value})}
+                    required
+                    placeholder="Technician name"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="priority">Priority</Label>
+                <Select id="priority" value={form.priority} onChange={(e) => setForm({...form, priority: e.target.value})}>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="dueDate">Due Date</Label>
+                <Input type="date" id="dueDate" value={form.dueDate} onChange={(e) => setForm({...form, dueDate: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="estimatedRepairTime">Est. Repair Time (hours)</Label>
+                <Input type="number" step="0.5" min="0" id="estimatedRepairTime" value={form.estimatedRepairTime} onChange={(e) => setForm({...form, estimatedRepairTime: e.target.value})} placeholder="e.g. 3" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="startTime">Start Time</Label>

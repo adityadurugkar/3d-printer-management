@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const { initSocket } = require('./config/socket');
 
 const path = require('path');
+const { startReminderService } = require('./services/reminderService');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const auditLogRoutes = require('./routes/auditLogs');
@@ -45,6 +46,7 @@ const server = http.createServer(app);
 
 connectDB().then(() => {
   initSocket(server);
+  startReminderService();
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
